@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自動街景影片產生器</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="config.js"></script>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.4.5/gifshot.min.js"></script>
+</head>
+<body>
+
+    <div id="page-menu">
+        <h2>歡迎使用自動街景工具</h2>
+        
+        <div id="g_id_onload" data-callback="handleCredentialResponse"></div>
+        <div class="g_id_signin btn" data-type="standard"></div>
+        
+        <button class="btn btn-map" onclick="switchPage('map')">進入地圖功能</button>
+    </div>
+
+    <div id="page-map-dashboard" class="hidden">
+        <div class="sidebar">
+            <h2>路徑設定</h2>
+            <div class="input-group">
+                <label for="start-input">起始地點 (A)</label>
+                <input type="text" id="start-input" placeholder="例如：台北車站" value="台北車站">
+            </div>
+            <div class="input-group">
+                <label for="end-input">結束地點 (B)</label>
+                <input type="text" id="end-input" placeholder="例如：西門町" value="西門紅樓">
+            </div>
+            <button class="btn-action" id="btn-generate" onclick="generateStreetViewVideo()">產生影片</button>
+            
+            <div id="status-text"></div>
+            
+            <div id="preview-container" class="hidden">
+                <h3>影片預覽 (GIF)</h3>
+                <img id="preview-gif" src="" alt="請稍候...">
+                <a id="download-link" href="#" download="streetview_trip.gif">
+                    <button class="btn-action btn-download">下載影片</button>
+                </a>
+            </div>
+            
+            <button class="btn-action" style="background:#666; margin-top:auto;" onclick="switchPage('menu')">返回主選單</button>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div id="pano"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        (function() {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${CONFIG.GOOGLE_MAPS_API_KEY}&libraries=geometry&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
