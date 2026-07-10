@@ -21,15 +21,17 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 
-
 </head>
+
 
 
 <body>
 
 
+<!-- =====================
+首頁
+===================== -->
 
-<!-- 首頁 -->
 
 <div id="page-menu">
 
@@ -40,15 +42,21 @@
 
 
 
-<div id="g_id_onload"
+<div 
+id="g_id_onload"
 
 data-client_id=""
+
 data-callback="handleCredentialResponse">
 
 </div>
 
 
-<div class="g_id_signin"
+
+
+<div 
+class="g_id_signin"
+
 data-type="standard">
 
 </div>
@@ -56,8 +64,10 @@ data-type="standard">
 
 
 
+
 <button
 class="btn-map"
+
 onclick="switchPage('map')">
 
 進入地圖功能
@@ -73,10 +83,20 @@ onclick="switchPage('map')">
 
 
 
-<!-- 主功能 -->
 
 
-<div id="page-map-dashboard" class="hidden">
+<!-- =====================
+主功能
+===================== -->
+
+
+<div 
+id="page-map-dashboard"
+
+class="hidden">
+
+
+
 
 
 
@@ -85,13 +105,38 @@ onclick="switchPage('map')">
 <div class="sidebar">
 
 
+
+
+
+<div class="sidebar-title">
+
+
 <h2>
 路徑設定
 </h2>
 
 
+<button
+class="api-button"
+
+onclick="openApiModal()">
+
+📊 API估算
+
+</button>
 
 
+</div>
+
+
+
+
+
+
+
+
+
+<!-- 起點 -->
 
 <div class="location-box">
 
@@ -104,14 +149,19 @@ onclick="switchPage('map')">
 <div class="location-row">
 
 
-<input 
+<input
+
 id="start-input"
+
 value="台北車站"
+
 >
 
 
 <button
+
 class="location-btn"
+
 onclick="locateStart()">
 
 定位
@@ -122,13 +172,16 @@ onclick="locateStart()">
 </div>
 
 
-
 </div>
 
 
 
 
 
+
+
+
+<!-- 終點 -->
 
 
 <div class="location-box">
@@ -139,17 +192,23 @@ onclick="locateStart()">
 </label>
 
 
+
 <div class="location-row">
 
 
-<input 
+<input
+
 id="end-input"
+
 value="西門紅樓"
+
 >
 
 
 <button
+
 class="location-btn"
+
 onclick="locateEnd()">
 
 定位
@@ -160,6 +219,7 @@ onclick="locateEnd()">
 </div>
 
 
+
 </div>
 
 
@@ -169,8 +229,11 @@ onclick="locateEnd()">
 
 
 
+
 <button
+
 class="btn-action"
+
 onclick="generateVideo()">
 
 🎬 產生影片
@@ -184,6 +247,10 @@ onclick="generateVideo()">
 
 
 
+
+<!-- 狀態 -->
+
+
 <div class="status-card">
 
 
@@ -192,6 +259,7 @@ onclick="generateVideo()">
 生成狀態
 
 </div>
+
 
 
 <div id="status-text">
@@ -205,7 +273,7 @@ onclick="generateVideo()">
 <div class="estimate-time">
 
 
-預估時間：
+預估影片時間：
 
 <span id="estimated-time">
 
@@ -217,6 +285,7 @@ onclick="generateVideo()">
 </div>
 
 
+
 </div>
 
 
@@ -225,6 +294,9 @@ onclick="generateVideo()">
 
 
 
+
+
+<!-- 進度 -->
 
 
 <div class="progress-container">
@@ -232,45 +304,33 @@ onclick="generateVideo()">
 
 <div class="progress-title">
 
+
+<span>
+
 生成進度
 
-<span id="progress-number">
-0%
 </span>
+
+
+
+<span id="progress-number">
+
+0%
+
+</span>
+
 
 </div>
 
 
+
 <div class="progress-bg">
+
 
 <div id="progress-bar">
 
 </div>
 
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="api-box">
-
-
-<h3>
-📊 API 使用估算
-</h3>
-
-
-<div id="api-estimate">
-
-尚未產生
 
 </div>
 
@@ -285,30 +345,48 @@ onclick="generateVideo()">
 
 
 
-<div id="video-container" class="hidden">
+<!-- 影片 -->
+
+
+<div 
+id="video-container"
+
+class="hidden">
 
 
 <div class="video-title">
 
-🎥 影片預覽
+🎥 Street View影片
 
 </div>
 
 
 
+
 <video
+
 id="preview-video"
-controls>
+
+controls
+
+playsinline>
 
 </video>
 
 
 
-<a id="download-link"
+
+
+<a
+
+id="download-link"
+
 download="streetview.webm">
 
 
-<button class="btn-download">
+<button
+
+class="btn-download">
 
 ⬇️ 下載影片
 
@@ -318,6 +396,7 @@ download="streetview.webm">
 </a>
 
 
+
 </div>
 
 
@@ -326,8 +405,12 @@ download="streetview.webm">
 
 
 
+
+
 <button
+
 class="btn-back"
+
 onclick="switchPage('menu')">
 
 返回首頁
@@ -347,19 +430,27 @@ onclick="switchPage('menu')">
 
 
 
-<!-- 右側 -->
+<!-- =====================
+右側 Map / StreetView
+===================== -->
+
 
 <div class="map-container">
-
 
 
 <div id="map"></div>
 
 
-
 <div id="pano"></div>
 
 
+</div>
+
+
+
+
+
+
 
 </div>
 
@@ -367,7 +458,82 @@ onclick="switchPage('menu')">
 
 
 
+
+
+
+
+<!-- =====================
+API Modal
+===================== -->
+
+
+<div
+
+id="api-modal"
+
+class="modal hidden">
+
+
+
+<div class="modal-box">
+
+
+
+<button
+
+class="modal-close"
+
+onclick="closeApiModal()">
+
+×
+
+</button>
+
+
+
+
+<h3>
+
+📊 API 使用估算
+
+</h3>
+
+
+
+
+
+<div id="api-estimate">
+
+
+尚未產生影片
+
 </div>
+
+
+
+
+
+
+
+<button
+
+class="modal-confirm"
+
+onclick="closeApiModal()">
+
+關閉
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
 
 
 
@@ -380,43 +546,63 @@ onclick="switchPage('menu')">
 
 
 
+
+
 <script>
+
 
 window.onload=function(){
 
 
+
 document
+
 .getElementById("g_id_onload")
+
 .dataset.client_id =
+
 CONFIG.GOOGLE_CLIENT_ID;
 
 
 
-let script =
-document.createElement("script");
 
 
-script.src =
+let script=document.createElement("script");
+
+
+
+script.src=
+
 "https://maps.googleapis.com/maps/api/js?key="
+
 +
+
 CONFIG.GOOGLE_MAPS_API_KEY
+
 +
+
 "&libraries=geometry&callback=initMap&loading=async";
+
+
+
 
 
 script.async=true;
 
-
 script.defer=true;
 
 
+
 document.head.appendChild(script);
+
 
 
 }
 
 
 </script>
+
+
 
 
 

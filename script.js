@@ -8,15 +8,19 @@ let geocoder;
 let startMarker = null;
 let endMarker = null;
 
+let lastApiEstimate = "";
 
-// ============================
+
+
+
+// =========================
 // Google Login
-// ============================
+// =========================
 
 function handleCredentialResponse(response){
 
     console.log(
-        "Google Login Token:",
+        "Google Login:",
         response.credential
     );
 
@@ -27,9 +31,11 @@ function handleCredentialResponse(response){
 
 
 
-// ============================
+
+
+// =========================
 // Page Switch
-// ============================
+// =========================
 
 function switchPage(page){
 
@@ -41,6 +47,7 @@ function switchPage(page){
         .getElementById("page-menu")
         .classList
         .add("hidden");
+
 
 
         document
@@ -60,8 +67,9 @@ function switchPage(page){
         },300);
 
 
-
     }
+
+
     else{
 
 
@@ -79,6 +87,7 @@ function switchPage(page){
 
     }
 
+
 }
 
 
@@ -87,18 +96,25 @@ function switchPage(page){
 
 
 
-// ============================
-// Init Map
-// ============================
 
+
+// =========================
+// Init Map
+// =========================
 
 function initMap(){
 
 
+
     let defaultPos={
+
         lat:25.0478,
+
         lng:121.517
+
     };
+
+
 
 
 
@@ -120,6 +136,9 @@ function initMap(){
 
 
 
+
+    // 獨立 Street View
+
     panorama =
     new google.maps.StreetViewPanorama(
 
@@ -130,8 +149,11 @@ function initMap(){
             position:defaultPos,
 
             pov:{
+
                 heading:0,
+
                 pitch:10
+
             }
 
         }
@@ -140,16 +162,13 @@ function initMap(){
 
 
 
-    map.setStreetView(
-        panorama
-    );
-
-
 
 
 
     directionsService =
     new google.maps.DirectionsService();
+
+
 
 
 
@@ -164,8 +183,11 @@ function initMap(){
 
 
 
+
+
     geocoder =
     new google.maps.Geocoder();
+
 
 
 }
@@ -177,23 +199,23 @@ function initMap(){
 
 
 
-// ============================
-// Marker 定位
-// ============================
+
+// =========================
+// 定位
+// =========================
 
 
 function locateStart(){
 
 
-    let text =
+    let value =
     document
     .getElementById("start-input")
     .value;
 
 
-
-    geocodeLocation(
-        text,
+    geocodeAddress(
+        value,
         "start"
     );
 
@@ -207,17 +229,17 @@ function locateStart(){
 function locateEnd(){
 
 
-    let text =
+    let value =
     document
     .getElementById("end-input")
     .value;
 
 
-
-    geocodeLocation(
-        text,
+    geocodeAddress(
+        value,
         "end"
     );
+
 
 }
 
@@ -225,7 +247,10 @@ function locateEnd(){
 
 
 
-function geocodeLocation(address,type){
+
+
+
+function geocodeAddress(address,type){
 
 
 
@@ -237,6 +262,7 @@ function geocodeLocation(address,type){
 
     },
 
+
     function(results,status){
 
 
@@ -244,10 +270,13 @@ function geocodeLocation(address,type){
         if(status==="OK"){
 
 
+
             let pos =
             results[0]
             .geometry
             .location;
+
+
 
 
 
@@ -258,6 +287,7 @@ function geocodeLocation(address,type){
                 if(startMarker)
 
                     startMarker.setMap(null);
+
 
 
 
@@ -276,6 +306,8 @@ function geocodeLocation(address,type){
 
             }
 
+
+
             else{
 
 
@@ -283,6 +315,7 @@ function geocodeLocation(address,type){
                 if(endMarker)
 
                     endMarker.setMap(null);
+
 
 
 
@@ -305,8 +338,8 @@ function geocodeLocation(address,type){
 
             map.panTo(pos);
 
-
             panorama.setPosition(pos);
+
 
 
         }
@@ -315,7 +348,7 @@ function geocodeLocation(address,type){
 
 
             alert(
-                "找不到地址"
+                "找不到位置"
             );
 
 
@@ -337,9 +370,49 @@ function geocodeLocation(address,type){
 
 
 
-// ============================
+
+// =========================
+// Modal
+// =========================
+
+
+function openApiModal(){
+
+
+    document
+    .getElementById("api-modal")
+    .classList
+    .remove("hidden");
+
+
+}
+
+
+
+
+
+function closeApiModal(){
+
+
+    document
+    .getElementById("api-modal")
+    .classList
+    .add("hidden");
+
+
+}
+
+
+
+
+
+
+
+
+
+// =========================
 // Progress
-// ============================
+// =========================
 
 
 function updateProgress(value,text){
@@ -376,12 +449,12 @@ function updateProgress(value,text){
 
 
 
-// ============================
-// Generate
-// ============================
-
+// =========================
+// Generate Video
+// =========================
 
 async function generateVideo(){
+
 
 
 let start =
@@ -395,7 +468,6 @@ let end =
 document
 .getElementById("end-input")
 .value;
-
 
 
 
@@ -423,7 +495,6 @@ updateProgress(
 
 
 
-
 directionsService.route(
 
 {
@@ -431,10 +502,12 @@ directionsService.route(
 
 origin:start,
 
+
 destination:end,
 
 
 travelMode:
+
 google.maps.TravelMode.DRIVING
 
 
@@ -450,14 +523,12 @@ if(status!=="OK"){
 
 
 alert(
-"路線失敗"
+"找不到路線"
 );
 
 return;
 
-
 }
-
 
 
 
@@ -469,8 +540,9 @@ directionsRenderer
 
 
 
-let path=[];
 
+
+let path=[];
 
 
 
@@ -481,16 +553,17 @@ result
 .forEach(step=>{
 
 
-step.path.forEach(p=>{
+step.path.forEach(point=>{
 
 
-path.push(p);
+path.push(point);
+
+
+});
 
 
 });
 
-
-});
 
 
 
@@ -499,9 +572,14 @@ path.push(p);
 
 
 updateProgress(
+
 20,
-"切割路徑..."
+
+"分析路線距離..."
+
 );
+
+
 
 
 
@@ -511,7 +589,7 @@ updateProgress(
 // 約8公尺一張
 
 let frames =
-splitFrames(
+createFrames(
 path,
 8
 );
@@ -521,32 +599,42 @@ path,
 
 
 
+
+let frameCount =
+frames.length;
+
+
+
+let totalSeconds =
+frameCount*1.5;
+
+
+
+
+let minutes =
+Math.floor(
+totalSeconds/60
+);
+
+
+
 let seconds =
-frames.length*1.5;
-
-
-
-let min =
-Math.floor(seconds/60);
-
-
-let sec =
-Math.round(seconds%60);
+Math.round(
+totalSeconds%60
+);
 
 
 
 
 
 
-document
-.getElementById("api-estimate")
-.innerHTML=
+lastApiEstimate =
 
 `
 
 Street View圖片：
 
-<b>${frames.length}</b> 張
+<b>${frameCount}</b> 張
 
 <br>
 
@@ -558,7 +646,7 @@ Street View圖片：
 
 影片時間：
 
-<b>${min}分${sec}秒</b>
+<b>${minutes} 分 ${seconds} 秒</b>
 
 `;
 
@@ -567,10 +655,19 @@ Street View圖片：
 
 
 document
-.getElementById("estimated-time")
-.innerText=
+.getElementById("api-estimate")
+.innerHTML =
+lastApiEstimate;
 
-`${min}分${sec}秒`;
+
+
+
+
+document
+.getElementById("estimated-time")
+.innerText =
+
+`${minutes}分${seconds}秒`;
 
 
 
@@ -580,6 +677,8 @@ document
 
 
 let images=[];
+
+
 
 
 
@@ -603,12 +702,18 @@ frames[i+1] || current;
 
 
 
+
 let heading =
 google.maps.geometry.spherical
 .computeHeading(
+
 current,
+
 next
+
 );
+
+
 
 
 
@@ -662,7 +767,9 @@ CONFIG.GOOGLE_MAPS_API_KEY;
 
 
 
+
 images.push(url);
+
 
 
 
@@ -672,10 +779,10 @@ updateProgress(
 
 25+
 Math.floor(
-(i/frames.length)*45
+(i/frameCount)*40
 ),
 
-`取得街景 ${i+1}/${frames.length}`
+`取得街景 ${i+1}/${frameCount}`
 
 );
 
@@ -688,16 +795,22 @@ Math.floor(
 
 
 
-// 右下動畫
+
+
+
+// 播放右下街景
 
 updateProgress(
 70,
-"播放街景動畫..."
+"播放沿路街景..."
 );
 
 
 
-await playStreetView(frames);
+await animateStreetView(
+frames
+);
+
 
 
 
@@ -705,8 +818,10 @@ await playStreetView(frames);
 
 updateProgress(
 80,
-"製作影片..."
+"生成影片..."
 );
+
+
 
 
 
@@ -719,10 +834,12 @@ await createVideo(images);
 
 
 
+
 document
 .getElementById("preview-video")
 .src =
 videoURL;
+
 
 
 
@@ -735,10 +852,13 @@ videoURL;
 
 
 
+
 document
 .getElementById("video-container")
 .classList
 .remove("hidden");
+
+
 
 
 
@@ -754,7 +874,6 @@ updateProgress(
 }
 
 
-
 );
 
 
@@ -768,13 +887,12 @@ updateProgress(
 
 
 
-// ============================
-// Split Frame
-// ============================
+// =========================
+// Frame切割
+// =========================
 
 
-function splitFrames(path,distance){
-
+function createFrames(path,distance){
 
 
 let result=[];
@@ -782,16 +900,21 @@ let result=[];
 
 
 if(path.length===0)
+
 return result;
 
 
 
-result.push(path[0]);
+result.push(
+path[0]
+);
 
 
 
 let last =
 path[0];
+
+
 
 
 
@@ -821,7 +944,6 @@ path[i]
 if(d>=distance){
 
 
-
 result.push(
 path[i]
 );
@@ -832,11 +954,11 @@ last =
 path[i];
 
 
-}
-
 
 }
 
+
+}
 
 
 
@@ -853,20 +975,19 @@ return result;
 
 
 
-// ============================
+// =========================
 // Street View Animation
-// ============================
+// =========================
+
+async function animateStreetView(frames){
 
 
-async function playStreetView(frames){
 
-
-
-for(let p of frames){
+for(let point of frames){
 
 
 panorama.setPosition(
-p
+point
 );
 
 
@@ -876,8 +997,8 @@ await sleep(
 );
 
 
-
 }
+
 
 
 }
@@ -900,9 +1021,9 @@ resolve=>setTimeout(resolve,ms)
 
 
 
-// ============================
-// Create Video
-// ============================
+// =========================
+// 產生 WebM
+// =========================
 
 
 async function createVideo(images){
@@ -913,14 +1034,17 @@ let canvas =
 document.createElement("canvas");
 
 
+
 canvas.width=640;
 
 canvas.height=360;
 
 
 
+
 let ctx =
 canvas.getContext("2d");
+
 
 
 
@@ -941,10 +1065,11 @@ let chunks=[];
 
 
 
+
 recorder.ondataavailable=function(e){
 
 
-if(e.data.size>0)
+if(e.data.size)
 
 chunks.push(e.data);
 
@@ -953,7 +1078,10 @@ chunks.push(e.data);
 
 
 
+
 recorder.start();
+
+
 
 
 
@@ -967,8 +1095,10 @@ for(let src of images){
 await new Promise(resolve=>{
 
 
+
 let img =
 new Image();
+
 
 
 img.crossOrigin="anonymous";
@@ -995,14 +1125,19 @@ img,
 
 
 
+
 setTimeout(
+
 resolve,
+
 1500
+
 );
 
 
 
 };
+
 
 
 
@@ -1013,14 +1148,16 @@ img.src=src;
 });
 
 
-
 }
 
 
 
 
 
+
+
 recorder.stop();
+
 
 
 
@@ -1056,6 +1193,7 @@ URL.createObjectURL(blob)
 
 
 };
+
 
 
 });

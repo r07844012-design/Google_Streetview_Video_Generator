@@ -32,6 +32,7 @@ background:#f5f7fb;
 
 
 
+
 .hidden{
 
 display:none!important;
@@ -44,7 +45,9 @@ display:none!important;
 
 
 
-/* 首頁 */
+/* =====================
+首頁
+===================== */
 
 
 #page-menu{
@@ -59,16 +62,18 @@ top:50%;
 left:50%;
 
 
-transform:translate(-50%,-50%);
+transform:
+
+translate(-50%,-50%);
 
 
 background:white;
 
 
-padding:40px;
-
-
 width:380px;
+
+
+padding:40px;
 
 
 border-radius:20px;
@@ -79,7 +84,7 @@ text-align:center;
 
 box-shadow:
 
-0 10px 30px rgba(0,0,0,.15);
+0 10px 35px rgba(0,0,0,.15);
 
 
 }
@@ -97,7 +102,7 @@ margin-top:25px;
 width:260px;
 
 
-height:48px;
+height:50px;
 
 
 border:none;
@@ -126,19 +131,22 @@ cursor:pointer;
 
 
 
-/* 主畫面 */
+
+/* =====================
+主畫面
+===================== */
 
 
 #page-map-dashboard{
-
-
-display:flex;
 
 
 height:100vh;
 
 
 width:100vw;
+
+
+display:flex;
 
 
 }
@@ -188,11 +196,72 @@ overflow:hidden;
 
 
 
-.sidebar h2{
+
+
+.sidebar-title{
+
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
+
+}
+
+
+
+
+.sidebar-title h2{
+
 
 margin:0;
 
+
+font-size:21px;
+
+
 }
+
+
+
+
+
+
+
+.api-button{
+
+
+height:34px;
+
+
+padding:0 12px;
+
+
+border:none;
+
+
+border-radius:18px;
+
+
+background:#4285f4;
+
+
+color:white;
+
+
+cursor:pointer;
+
+
+font-size:13px;
+
+
+}
+
+
 
 
 
@@ -210,6 +279,7 @@ font-weight:bold;
 
 
 }
+
 
 
 
@@ -239,7 +309,7 @@ margin-top:5px;
 flex:1;
 
 
-height:36px;
+height:38px;
 
 
 border-radius:8px;
@@ -256,11 +326,13 @@ padding:8px;
 
 
 
-
 .location-btn{
 
 
 width:65px;
+
+
+height:38px;
 
 
 border:none;
@@ -299,7 +371,13 @@ border:none;
 border-radius:25px;
 
 
-background:#667eea;
+background:
+
+linear-gradient(
+135deg,
+#667eea,
+#764ba2
+);
 
 
 color:white;
@@ -317,6 +395,10 @@ cursor:pointer;
 
 
 
+
+
+
+/* 狀態 */
 
 
 .status-card{
@@ -338,8 +420,6 @@ font-size:14px;
 
 
 
-
-
 .status-title{
 
 
@@ -358,6 +438,9 @@ font-weight:bold;
 margin-top:8px;
 
 
+font-size:13px;
+
+
 color:#666;
 
 
@@ -367,19 +450,27 @@ color:#666;
 
 
 
+
+
+
+/* 進度 */
+
+
 .progress-container{
-
-
-background:#fff;
 
 
 padding:10px;
 
 
+background:white;
+
+
 border-radius:12px;
 
 
-box-shadow:0 2px 8px #ddd;
+box-shadow:
+
+0 2px 8px rgba(0,0,0,.1);
 
 
 }
@@ -404,10 +495,11 @@ font-size:13px;
 
 
 
+
 .progress-bg{
 
 
-height:15px;
+height:14px;
 
 
 background:#ddd;
@@ -444,25 +536,10 @@ transition:.3s;
 
 
 
-.api-box{
-
-
-background:#fafafa;
-
-
-padding:12px;
-
-
-border-radius:12px;
-
-
-font-size:13px;
-
-
-}
 
 
 
+/*影片*/
 
 
 #video-container{
@@ -482,7 +559,6 @@ border-radius:12px;
 
 
 
-
 .video-title{
 
 
@@ -493,7 +569,6 @@ margin-bottom:8px;
 
 
 }
-
 
 
 
@@ -513,6 +588,8 @@ border-radius:10px;
 
 
 }
+
+
 
 
 
@@ -554,6 +631,8 @@ cursor:pointer;
 
 
 
+
+
 .btn-back{
 
 
@@ -575,6 +654,9 @@ background:#666;
 color:white;
 
 
+cursor:pointer;
+
+
 }
 
 
@@ -584,7 +666,10 @@ color:white;
 
 
 
-/* 右側 */
+
+/* =====================
+右側
+===================== */
 
 
 .map-container{
@@ -603,7 +688,6 @@ flex-direction:column;
 
 
 
-
 #map{
 
 
@@ -617,7 +701,6 @@ width:100%;
 
 
 
-
 #pano{
 
 
@@ -628,6 +711,185 @@ width:100%;
 
 
 background:#ddd;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =====================
+API Modal
+===================== */
+
+
+.modal{
+
+
+position:fixed;
+
+
+top:0;
+
+
+left:0;
+
+
+width:100vw;
+
+
+height:100vh;
+
+
+background:
+
+rgba(0,0,0,.35);
+
+
+display:flex;
+
+
+justify-content:center;
+
+
+align-items:center;
+
+
+z-index:999;
+
+
+}
+
+
+
+
+
+
+.modal-box{
+
+
+position:relative;
+
+
+background:white;
+
+
+width:320px;
+
+
+padding:25px;
+
+
+border-radius:18px;
+
+
+box-shadow:
+
+0 15px 40px rgba(0,0,0,.25);
+
+
+}
+
+
+
+
+
+.modal-close{
+
+
+position:absolute;
+
+
+right:15px;
+
+
+top:10px;
+
+
+border:none;
+
+
+width:30px;
+
+
+height:30px;
+
+
+border-radius:50%;
+
+
+font-size:20px;
+
+
+cursor:pointer;
+
+
+}
+
+
+
+.modal-box h3{
+
+
+margin-top:0;
+
+
+}
+
+
+
+
+#api-estimate{
+
+
+font-size:15px;
+
+
+line-height:1.8;
+
+
+color:#555;
+
+
+}
+
+
+
+
+
+.modal-confirm{
+
+
+display:block;
+
+
+margin:20px auto 0;
+
+
+width:150px;
+
+
+height:38px;
+
+
+border:none;
+
+
+border-radius:20px;
+
+
+background:#4285f4;
+
+
+color:white;
+
+
+cursor:pointer;
 
 
 }
