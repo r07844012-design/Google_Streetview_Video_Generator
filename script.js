@@ -1,200 +1,264 @@
 let map;
+
 let panorama;
 
 let directionsService;
+
 let directionsRenderer;
 
 
 
 
-window.onload=function(){
-
-document
-.getElementById("g_id_onload")
-.dataset.client_id=
-CONFIG.GOOGLE_CLIENT_ID;
+// =======================
+// Google Login
+// =======================
 
 
-};
+function handleCredentialResponse(response){
+
+    console.log(
+        "Google Token:",
+        response.credential
+    );
+
+
+    alert(
+        "Google 登入成功"
+    );
+
+}
 
 
 
+
+// =======================
+// Page Switch
+// =======================
 
 
 function switchPage(page){
 
 
-if(page==="map"){
+    if(page==="map"){
 
 
-document
-.getElementById("page-menu")
-.classList.add("hidden");
+        document
+        .getElementById(
+            "page-menu"
+        )
+        .classList
+        .add("hidden");
 
 
-document
-.getElementById("page-map-dashboard")
-.classList.remove("hidden");
+
+        document
+        .getElementById(
+            "page-map-dashboard"
+        )
+        .classList
+        .remove("hidden");
 
 
-google.maps.event.trigger(map,"resize");
 
+        google.maps.event.trigger(
+            map,
+            "resize"
+        );
+
+
+    }
+
+    else{
+
+
+        document
+        .getElementById(
+            "page-map-dashboard"
+        )
+        .classList
+        .add("hidden");
+
+
+
+        document
+        .getElementById(
+            "page-menu"
+        )
+        .classList
+        .remove("hidden");
+
+
+    }
 
 }
 
-else{
-
-
-document
-.getElementById("page-map-dashboard")
-.classList.add("hidden");
-
-
-document
-.getElementById("page-menu")
-.classList.remove("hidden");
-
-
-}
-
-
-
-}
 
 
 
 
 
-function handleCredentialResponse(response){
 
-
-console.log(response.credential);
-
-
-alert(
-"Google登入成功"
-);
-
-
-}
-
-
-
-
-
+// =======================
+// Init Map
+// =======================
 
 
 function initMap(){
 
 
 
-let pos={
+    let start={
 
-lat:25.0478,
+        lat:25.0478,
 
-lng:121.517
+        lng:121.517
 
-};
+    };
 
 
 
-map=new google.maps.Map(
+    map=new google.maps.Map(
 
-document.getElementById("map"),
+        document.getElementById(
+            "map"
+        ),
 
-{
+        {
 
-center:pos,
+            center:start,
 
-zoom:14
+            zoom:15
+
+        }
+
+    );
+
+
+
+
+
+    panorama =
+    new google.maps.StreetViewPanorama(
+
+        document.getElementById(
+            "pano"
+        ),
+
+        {
+
+            position:start,
+
+            pov:
+            {
+
+                heading:0,
+
+                pitch:0
+
+            }
+
+        }
+
+    );
+
+
+
+    map.setStreetView(
+        panorama
+    );
+
+
+
+
+
+    directionsService =
+    new google.maps.DirectionsService();
+
+
+
+
+    directionsRenderer =
+    new google.maps.DirectionsRenderer();
+
+
+    directionsRenderer.setMap(
+        map
+    );
+
 
 }
 
+
+
+
+
+
+
+
+
+function updateProgress(value){
+
+
+    document
+    .getElementById(
+        "progress-bar"
+    )
+    .style.width =
+    value+"%";
+
+
+
+    document
+    .getElementById(
+        "progress-number"
+    )
+    .innerText =
+    value+"%";
+
+}
+
+
+
+
+
+
+
+
+
+// =======================
+// Generate WebM
+// =======================
+
+
+async function generateVideo(){
+
+
+
+let start =
+document.getElementById(
+"start-input"
+).value;
+
+
+
+let end =
+document.getElementById(
+"end-input"
+).value;
+
+
+
+let status =
+document.getElementById(
+"status-text"
 );
 
 
 
-
-panorama=new google.maps.StreetViewPanorama(
-
-document.getElementById("pano"),
-
-{
-
-position:pos,
-
-pov:{heading:0,pitch:0}
-
-}
-
+let btn =
+document.getElementById(
+"btn-generate"
 );
-
-
-
-directionsService=
-new google.maps.DirectionsService();
-
-
-
-directionsRenderer=
-new google.maps.DirectionsRenderer();
-
-
-directionsRenderer.setMap(map);
-
-
-
-}
-
-
-
-
-
-
-
-
-function updateProgress(v){
-
-
-document
-.getElementById("progress-bar")
-.style.width=v+"%";
-
-
-document
-.getElementById("progress-number")
-.innerHTML=v+"%";
-
-
-}
-
-
-
-
-
-
-
-
-
-async function generateStreetViewVideo(){
-
-
-
-let start=
-document.getElementById("start-input").value;
-
-
-let end=
-document.getElementById("end-input").value;
-
-
-let status=
-document.getElementById("status-text");
-
-
-
-let btn=
-document.getElementById("btn-generate");
 
 
 
@@ -202,12 +266,14 @@ btn.disabled=true;
 
 
 
-updateProgress(0);
-
-
 
 status.innerHTML=
 "搜尋路線...";
+
+
+
+updateProgress(0);
+
 
 
 
@@ -221,31 +287,45 @@ origin:start,
 
 destination:end,
 
-travelMode:"DRIVING"
+travelMode:
+google.maps.TravelMode.DRIVING
+
 
 },
 
 
-async function(result,statusCode){
+async(result,state)=>{
 
 
 
-if(statusCode!="OK"){
+if(state!=="OK"){
 
 
-alert("找不到路線");
+alert(
+"找不到路線"
+);
+
 
 btn.disabled=false;
 
+
 return;
+
 
 }
 
 
 
 
+
+
 directionsRenderer
-.setDirections(result);
+.setDirections(
+result
+);
+
+
+
 
 
 
@@ -253,35 +333,47 @@ let points=[];
 
 
 
-result.routes[0]
+result
+.routes[0]
 .legs[0]
 .steps
-.forEach(s=>{
+.forEach(step=>{
 
 
-s.path.forEach(p=>{
+step.path.forEach(p=>{
+
 
 points.push(p);
 
-});
-
 
 });
 
 
+});
 
 
-// 限制圖片數量
-
-let sample=[];
 
 
-let count=12;
 
 
-let gap=Math.floor(
-points.length/count
+
+// frame數量
+
+let FRAME_COUNT=50;
+
+
+
+let frames=[];
+
+
+
+let gap =
+Math.floor(
+points.length / FRAME_COUNT
 );
+
+
+
 
 
 
@@ -291,10 +383,22 @@ i<points.length;
 i+=gap
 ){
 
-sample.push(points[i]);
+
+frames.push(
+points[i]
+);
 
 
 }
+
+
+
+
+
+
+
+status.innerHTML=
+"取得街景圖片...";
 
 
 
@@ -304,38 +408,57 @@ let images=[];
 
 
 
+
+
 for(
 let i=0;
-i<sample.length;
+i<frames.length;
 i++
 ){
 
 
 
-let p=sample[i];
+let p=frames[i];
+
 
 
 let next=
-sample[i+1]||p;
+frames[i+1] || p;
 
 
 
-let heading=
-google.maps.geometry.spherical.computeHeading(
+let heading =
+google.maps.geometry.spherical
+.computeHeading(
 p,
 next
 );
 
 
 
-let url=
 
-`https://maps.googleapis.com/maps/api/streetview?
-size=600x400&
-location=${p.lat()},${p.lng()}&
-heading=${heading}&
-pitch=10&
-key=${CONFIG.GOOGLE_MAPS_API_KEY}`;
+let url =
+"https://maps.googleapis.com/maps/api/streetview?"
++
+"size=640x360"
++
+"&location="
++
+p.lat()
++
+","
++
+p.lng()
++
+"&heading="
++
+heading
++
+"&pitch=10"
++
+"&key="
++
+CONFIG.GOOGLE_MAPS_API_KEY;
 
 
 
@@ -343,17 +466,13 @@ images.push(url);
 
 
 
+
 updateProgress(
 Math.floor(
-(i+1)/sample.length*70
+(i/frames.length)*60
 )
 
 );
-
-
-
-status.innerHTML=
-`取得街景 ${i+1}/${sample.length}`;
 
 
 
@@ -363,60 +482,56 @@ status.innerHTML=
 
 
 
+
+
+
 status.innerHTML=
-"製作GIF...";
-
-
-updateProgress(75);
+"製作影片...";
 
 
 
 
-
-
-gifshot.createGIF(
-
-{
-
-
-images:images,
-
-interval:0.5,
-
-gifWidth:600,
-
-gifHeight:400
-
-
-},
-
-
-function(obj){
+let video =
+await createWebM(
+images
+);
 
 
 
-if(!obj.error){
-
-
-document
-.getElementById("preview-gif")
-.src=obj.image;
 
 
 
 document
-.getElementById("download-link")
-.href=obj.image;
+.getElementById(
+"preview-video"
+)
+.src =
+video;
 
 
 
 document
-.getElementById("preview-container")
-.classList.remove("hidden");
+.getElementById(
+"download-link"
+)
+.href =
+video;
+
+
+
+
+document
+.getElementById(
+"video-container"
+)
+.classList
+.remove("hidden");
+
 
 
 
 updateProgress(100);
+
 
 
 status.innerHTML=
@@ -424,34 +539,185 @@ status.innerHTML=
 
 
 
-}
-
-else{
-
-
-status.innerHTML=
-"GIF失敗";
-
-
-}
-
-
-
 btn.disabled=false;
 
 
 
+
+});
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// =======================
+// Canvas -> WebM
+// =======================
+
+
+async function createWebM(images){
+
+
+
+let canvas =
+document.createElement(
+"canvas"
+);
+
+
+
+canvas.width=640;
+
+canvas.height=360;
+
+
+
+let ctx =
+canvas.getContext(
+"2d"
+);
+
+
+
+let stream =
+canvas.captureStream(
+10
+);
+
+
+
+let recorder =
+new MediaRecorder(
+stream,
+{
+
+mimeType:
+"video/webm"
+
 }
 
 );
 
 
 
+
+let chunks=[];
+
+
+
+recorder.ondataavailable=e=>{
+
+
+if(e.data.size>0)
+
+chunks.push(e.data);
+
+
+};
+
+
+
+recorder.start();
+
+
+
+
+
+
+for(let img of images){
+
+
+
+await new Promise(resolve=>{
+
+
+let image =
+new Image();
+
+
+image.crossOrigin="anonymous";
+
+
+
+image.onload=()=>{
+
+
+ctx.drawImage(
+image,
+0,
+0,
+640,
+360
+);
+
+
+
+setTimeout(
+resolve,
+100
+);
+
+
+};
+
+
+
+image.src=img;
+
+
+
+});
+
+
 }
 
 
 
+
+
+recorder.stop();
+
+
+
+
+
+return new Promise(resolve=>{
+
+
+recorder.onstop=()=>{
+
+
+let blob =
+new Blob(
+chunks,
+{
+type:"video/webm"
+}
+
 );
+
+
+
+resolve(
+URL.createObjectURL(
+blob
+)
+
+);
+
+
+};
+
+
+});
 
 
 

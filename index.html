@@ -4,9 +4,12 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>自動街景影片產生器</title>
+<title>
+AI Street View Video Generator
+</title>
 
 
 <link rel="stylesheet" href="style.css">
@@ -19,38 +22,30 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 
-<!-- GIF library -->
-<script src="https://cdn.jsdelivr.net/npm/gifshot@0.4.5/dist/gifshot.min.js"></script>
-
-
 </head>
+
 
 
 <body>
 
 
-<!-- 第一頁 -->
+<!-- 首頁 -->
 
 <div id="page-menu">
 
 
-<h2>
-自動街景影片產生器
-</h2>
+<h1>
+🚗 Street View 自動影片產生器
+</h1>
+
+
+<p>
+輸入起點與終點，自動生成街景影片
+</p>
 
 
 
-<div 
-id="g_id_onload"
-data-client_id=""
-data-callback="handleCredentialResponse">
-</div>
-
-
-<div 
-class="g_id_signin"
-data-type="standard">
-</div>
+<div id="google-login-area"></div>
 
 
 
@@ -58,10 +53,9 @@ data-type="standard">
 class="btn btn-map"
 onclick="switchPage('map')">
 
-進入地圖功能
+🗺️ 進入地圖功能
 
 </button>
-
 
 
 </div>
@@ -71,11 +65,14 @@ onclick="switchPage('map')">
 
 
 
-<!-- 第二頁 -->
+<!-- 主功能頁 -->
 
 
 <div id="page-map-dashboard" class="hidden">
 
+
+
+<!-- 左側 -->
 
 <div class="sidebar">
 
@@ -86,70 +83,87 @@ onclick="switchPage('map')">
 
 
 
+
 <div class="input-group">
 
 <label>
-起點
+起始位置 A
 </label>
 
 <input 
 id="start-input"
-value="台北車站">
+placeholder="例如：台北車站">
+
 
 </div>
 
 
 
+
 <div class="input-group">
 
 <label>
-終點
+目的地 B
 </label>
 
 
 <input 
 id="end-input"
-value="西門紅樓">
+placeholder="例如：西門町">
+
 
 </div>
+
+
 
 
 
 <button
 id="btn-generate"
 class="btn-action"
-onclick="generateStreetViewVideo()">
+onclick="generateVideo()">
 
-產生影片
+🎬 產生影片
 
 </button>
 
 
 
+
 <div id="status-text">
 
-等待開始
+等待輸入路線
 
 </div>
+
+
 
 
 
 <div class="progress-box">
 
-<div id="progress-bar"></div>
+<div id="progress-bar">
 
 </div>
+
+</div>
+
 
 
 <div id="progress-number">
+
 0%
+
 </div>
 
 
 
 
-<div 
-id="preview-container"
+
+
+<!--影片區-->
+
+<div id="video-container"
 class="hidden">
 
 
@@ -158,20 +172,23 @@ class="hidden">
 </h3>
 
 
-<img 
-id="preview-gif">
+<video
+id="preview-video"
+controls>
+</video>
 
 
 
-<a 
+
+<a
 id="download-link"
-download="streetview.gif">
+download="streetview_trip.webm">
 
 
-<button 
-class="btn-action btn-download">
+<button
+class="btn-download">
 
-下載影片
+⬇️ 下載影片
 
 </button>
 
@@ -179,35 +196,42 @@ class="btn-action btn-download">
 </a>
 
 
-
 </div>
+
 
 
 
 
 <button
-class="btn-action back"
+class="btn-back"
 onclick="switchPage('menu')">
 
-返回
+返回首頁
 
 </button>
 
 
+
 </div>
 
 
 
 
 
+
+<!--右側-->
 
 <div class="map-container">
 
 
-<div id="map"></div>
+<div id="map">
+
+</div>
 
 
-<div id="pano"></div>
+<div id="pano">
+
+</div>
 
 
 </div>
@@ -215,6 +239,67 @@ onclick="switchPage('menu')">
 
 
 </div>
+
+
+
+
+
+
+
+
+<script>
+
+
+/*
+建立Google Login
+避免 client_id undefined
+*/
+
+
+window.onload=function(){
+
+
+google.accounts.id.initialize({
+
+client_id:
+CONFIG.GOOGLE_CLIENT_ID,
+
+
+callback:
+handleCredentialResponse
+
+
+});
+
+
+
+google.accounts.id.renderButton(
+
+document.getElementById(
+"google-login-area"
+),
+
+{
+
+theme:"outline",
+
+size:"large",
+
+width:260
+
+
+}
+
+);
+
+
+};
+
+
+
+
+
+</script>
 
 
 
@@ -228,10 +313,14 @@ onclick="switchPage('menu')">
 <script>
 
 
-let script=document.createElement("script");
+let googleMapScript =
+document.createElement(
+"script"
+);
 
 
-script.src=
+
+googleMapScript.src =
 "https://maps.googleapis.com/maps/api/js?key="
 +
 CONFIG.GOOGLE_MAPS_API_KEY
@@ -239,16 +328,21 @@ CONFIG.GOOGLE_MAPS_API_KEY
 "&libraries=geometry&callback=initMap&loading=async";
 
 
-script.async=true;
 
-script.defer=true;
+googleMapScript.async=true;
+
+googleMapScript.defer=true;
 
 
-document.head.appendChild(script);
+
+document.head.appendChild(
+googleMapScript
+);
 
 
 
 </script>
+
 
 
 

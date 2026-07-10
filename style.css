@@ -1,227 +1,539 @@
+/* =========================
+   Global
+========================= */
+
+
+*{
+    box-sizing:border-box;
+}
+
+
 body{
 
-margin:0;
+    margin:0;
 
-height:100vh;
+    width:100vw;
 
-font-family:Arial;
+    height:100vh;
 
-background:#f5f7fb;
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+    background:#f5f7fb;
 
 }
 
+
+
+/* =========================
+   Hidden
+========================= */
 
 
 .hidden{
 
-display:none!important;
+    display:none!important;
 
 }
 
 
 
+
+/* =========================
+   Home Page
+========================= */
 
 
 #page-menu{
 
-background:white;
 
-padding:40px;
+    width:420px;
 
-border-radius:15px;
+    background:white;
 
-text-align:center;
+    padding:45px;
 
-position:absolute;
 
-top:50%;
+    border-radius:20px;
 
-left:50%;
 
-transform:translate(-50%,-50%);
+    position:absolute;
 
-box-shadow:0 5px 20px #aaa;
+    left:50%;
+
+    top:50%;
+
+    transform:
+    translate(-50%,-50%);
+
+
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.15);
+
+
+
+    text-align:center;
+
+}
+
+
+
+
+#page-menu h1{
+
+    margin-bottom:15px;
+
+    color:#333;
+
+}
+
+
+
+#page-menu p{
+
+    color:#666;
+
+    margin-bottom:30px;
 
 }
 
 
 
 
+#google-login-area{
 
-.btn{
+    display:flex;
 
+    justify-content:center;
 
-width:260px;
-
-padding:15px;
-
-margin:20px;
-
-border:none;
-
-border-radius:8px;
-
-cursor:pointer;
-
-font-size:16px;
-
+    margin-bottom:25px;
 
 }
+
 
 
 
 
 .btn-map{
 
-background:#34a853;
 
-color:white;
+    width:260px;
+
+    height:50px;
+
+
+    border:none;
+
+    border-radius:30px;
+
+
+    cursor:pointer;
+
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #34a853,
+        #0f9d58
+    );
+
+
+
+    box-shadow:
+    0 8px 20px rgba(52,168,83,.3);
+
+
+
+    transition:.3s;
+
 
 }
 
 
 
+.btn-map:hover{
+
+
+    transform:
+    translateY(-3px);
+
+
+}
+
+
+
+
+
+
+/* =========================
+   Main Layout
+========================= */
 
 
 #page-map-dashboard{
 
-display:flex;
 
-height:100vh;
+    width:100vw;
 
-width:100vw;
+    height:100vh;
+
+
+    display:flex;
+
 
 }
 
 
+
+
+
+/* =========================
+ Sidebar
+========================= */
 
 
 .sidebar{
 
 
-width:350px;
-
-background:white;
-
-padding:25px;
-
-box-shadow:2px 0 10px #aaa;
+    width:360px;
 
 
-display:flex;
+    height:100%;
 
-flex-direction:column;
+
+    background:white;
+
+
+    padding:30px;
+
+
+
+    box-shadow:
+    3px 0 20px rgba(0,0,0,.1);
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+
+    z-index:10;
+
+}
+
+
+
+
+
+.sidebar h2{
+
+
+    margin-top:0;
+
+
+    color:#333;
 
 
 }
+
+
 
 
 
 
 .input-group{
 
-margin-bottom:15px;
+
+    margin-bottom:20px;
+
 
 }
+
+
+
+.input-group label{
+
+
+    display:block;
+
+
+    margin-bottom:8px;
+
+
+    font-weight:bold;
+
+
+    color:#555;
+
+
+}
+
 
 
 .input-group input{
 
 
-width:100%;
+    width:100%;
 
-padding:10px;
 
-box-sizing:border-box;
+    height:45px;
+
+
+    padding:10px 15px;
+
+
+    border:
+
+    1px solid #ddd;
+
+
+    border-radius:10px;
+
+
+    font-size:15px;
 
 
 }
 
 
+
+.input-group input:focus{
+
+
+    outline:none;
+
+
+    border-color:#4285f4;
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================
+ Buttons
+========================= */
 
 
 .btn-action{
 
 
-padding:12px;
+    width:100%;
 
-background:#1a73e8;
 
-color:white;
+    height:50px;
 
-border:none;
 
-cursor:pointer;
+    border:none;
 
-margin-top:10px;
+
+    border-radius:25px;
+
+
+    cursor:pointer;
+
+
+
+    color:white;
+
+
+    font-size:17px;
+
+
+    font-weight:bold;
+
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #667eea,
+        #764ba2
+    );
+
+
+
+    box-shadow:
+
+    0 8px 20px rgba(118,75,162,.3);
+
+
+
+    transition:.3s;
+
 
 
 }
+
+
+
+.btn-action:hover{
+
+
+    transform:
+    translateY(-3px);
+
+
+}
+
+
+
+.btn-action:disabled{
+
+
+    opacity:.5;
+
+
+}
+
 
 
 
 
 .btn-download{
 
-background:#ea4335;
+
+    width:220px;
+
+
+    display:block;
+
+
+    margin:25px auto;
+
+
+
+    height:48px;
+
+
+    border:none;
+
+
+    border-radius:25px;
+
+
+    cursor:pointer;
+
+
+    color:white;
+
+
+    font-weight:bold;
+
+
+    font-size:16px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #ff416c,
+        #ff4b2b
+    );
+
 
 }
 
 
 
 
-.back{
 
-margin-top:auto;
+.btn-back{
 
-background:#666;
+
+    margin-top:auto;
+
+
+    height:45px;
+
+
+    border:none;
+
+
+    border-radius:25px;
+
+
+    background:#666;
+
+
+    color:white;
+
+
+    cursor:pointer;
+
+
+    font-size:16px;
+
 
 }
 
 
 
 
-.map-container{
-
-flex:1;
-
-display:flex;
-
-flex-direction:column;
-
-}
 
 
-
-#map{
-
-height:50%;
-
-}
+/* =========================
+ Progress
+========================= */
 
 
+#status-text{
 
-#pano{
 
-height:50%;
+    margin-top:20px;
+
+
+    text-align:center;
+
+
+    color:#555;
+
 
 }
-
 
 
 
 
 .progress-box{
 
-height:20px;
 
-background:#ddd;
+    width:100%;
 
-margin-top:15px;
 
-border-radius:10px;
+    height:18px;
 
-overflow:hidden;
+
+    background:#eee;
+
+
+    border-radius:20px;
+
+
+    overflow:hidden;
+
+
+    margin-top:15px;
+
 
 }
 
@@ -230,32 +542,125 @@ overflow:hidden;
 #progress-bar{
 
 
-height:100%;
+    height:100%;
 
-width:0%;
 
-background:#1a73e8;
+    width:0%;
 
-transition:.3s;
+
+    background:
+
+    linear-gradient(
+        90deg,
+        #4285f4,
+        #34a853
+    );
+
+
+    transition:.3s;
 
 
 }
+
+
 
 
 
 #progress-number{
 
-text-align:center;
 
-margin-top:5px;
+    text-align:center;
+
+
+    margin-top:8px;
+
+
+    color:#555;
+
 
 }
 
 
 
 
-#preview-gif{
 
-width:100%;
+
+/* =========================
+ Video
+========================= */
+
+
+
+#video-container{
+
+
+    margin-top:25px;
+
+
+    text-align:center;
+
+
+}
+
+
+
+#preview-video{
+
+
+    width:100%;
+
+
+    border-radius:15px;
+
+
+    box-shadow:
+
+    0 5px 20px rgba(0,0,0,.2);
+
+
+}
+
+
+
+
+
+/* =========================
+ Map
+========================= */
+
+
+
+.map-container{
+
+
+    flex:1;
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+}
+
+
+
+#map{
+
+
+    height:50%;
+
+
+}
+
+
+
+
+#pano{
+
+
+    height:50%;
+
 
 }
