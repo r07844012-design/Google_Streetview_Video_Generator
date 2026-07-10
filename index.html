@@ -7,9 +7,8 @@
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-
 <title>
-Street View Video Generator
+自動街景影片產生器
 </title>
 
 
@@ -18,7 +17,9 @@ Street View Video Generator
 
 <script src="config.js"></script>
 
+
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+
 
 
 </head>
@@ -28,21 +29,29 @@ Street View Video Generator
 
 
 
+<!-- 首頁 -->
+
 <div id="page-menu">
 
 
-<h1>
-🚗 Street View AI Video
-</h1>
-
-
-<p>
-自動生成 A 到 B 街景動畫
-</p>
+<h2>
+🚗 自動街景影片產生器
+</h2>
 
 
 
-<div id="google-login-area"></div>
+<div id="g_id_onload"
+
+data-client_id=""
+data-callback="handleCredentialResponse">
+
+</div>
+
+
+<div class="g_id_signin"
+data-type="standard">
+
+</div>
 
 
 
@@ -51,10 +60,9 @@ Street View Video Generator
 class="btn-map"
 onclick="switchPage('map')">
 
-🗺️ 進入地圖功能
+進入地圖功能
 
 </button>
-
 
 
 </div>
@@ -65,16 +73,16 @@ onclick="switchPage('map')">
 
 
 
-
-<div id="page-map-dashboard"
-class="hidden">
+<!-- 主功能 -->
 
 
+<div id="page-map-dashboard" class="hidden">
 
 
+
+<!-- 左側 -->
 
 <div class="sidebar">
-
 
 
 <h2>
@@ -85,21 +93,21 @@ class="hidden">
 
 
 
-<div class="location-row">
+<div class="location-box">
 
-
-<div class="input-group">
 
 <label>
-📍 起始位置
+起始點 A
 </label>
 
 
-<input
-id="start-input"
-placeholder="例如：台北車站">
+<div class="location-row">
 
-</div>
+
+<input 
+id="start-input"
+value="台北車站"
+>
 
 
 <button
@@ -111,6 +119,9 @@ onclick="locateStart()">
 </button>
 
 
+</div>
+
+
 
 </div>
 
@@ -118,26 +129,23 @@ onclick="locateStart()">
 
 
 
+
+
+<div class="location-box">
+
+
+<label>
+目的地 B
+</label>
 
 
 <div class="location-row">
 
 
-<div class="input-group">
-
-
-<label>
-🏁 目的地
-</label>
-
-
-<input
+<input 
 id="end-input"
-placeholder="例如：西門紅樓">
-
-
-</div>
-
+value="西門紅樓"
+>
 
 
 <button
@@ -152,34 +160,6 @@ onclick="locateEnd()">
 </div>
 
 
-
-
-
-
-
-<div class="mode-box">
-
-
-<h3>
-🎬 影片模式
-</h3>
-
-
-<p>
-✓ Street View 沿路動畫模式
-</p>
-
-
-<p>
-✓ 每約20~30公尺取樣
-</p>
-
-
-<p>
-✓ 每個畫面停留1.5秒
-</p>
-
-
 </div>
 
 
@@ -188,14 +168,12 @@ onclick="locateEnd()">
 
 
 
+
 <button
-id="btn-generate"
 class="btn-action"
 onclick="generateVideo()">
 
-
-🎥 開始產生影片
-
+🎬 產生影片
 
 </button>
 
@@ -206,6 +184,16 @@ onclick="generateVideo()">
 
 
 
+<div class="status-card">
+
+
+<div class="status-title">
+
+生成狀態
+
+</div>
+
+
 <div id="status-text">
 
 等待輸入
@@ -214,23 +202,58 @@ onclick="generateVideo()">
 
 
 
+<div class="estimate-time">
 
 
-<div class="progress-box">
+預估時間：
+
+<span id="estimated-time">
+
+尚未計算
+
+</span>
 
 
-<div id="progress-bar"></div>
+</div>
 
 
 </div>
 
 
 
-<div id="progress-number">
 
+
+
+
+
+
+<div class="progress-container">
+
+
+<div class="progress-title">
+
+生成進度
+
+<span id="progress-number">
 0%
+</span>
 
 </div>
+
+
+<div class="progress-bg">
+
+<div id="progress-bar">
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
 
 
 
@@ -243,7 +266,6 @@ onclick="generateVideo()">
 <h3>
 📊 API 使用估算
 </h3>
-
 
 
 <div id="api-estimate">
@@ -262,13 +284,16 @@ onclick="generateVideo()">
 
 
 
-<div id="video-container"
-class="hidden">
+
+<div id="video-container" class="hidden">
 
 
-<h3>
-🎥 完成影片
-</h3>
+<div class="video-title">
+
+🎥 影片預覽
+
+</div>
+
 
 
 <video
@@ -278,8 +303,22 @@ controls>
 </video>
 
 
-</div>
 
+<a id="download-link"
+download="streetview.webm">
+
+
+<button class="btn-download">
+
+⬇️ 下載影片
+
+</button>
+
+
+</a>
+
+
+</div>
 
 
 
@@ -297,6 +336,7 @@ onclick="switchPage('menu')">
 
 
 
+
 </div>
 
 
@@ -307,19 +347,19 @@ onclick="switchPage('menu')">
 
 
 
+<!-- 右側 -->
+
 <div class="map-container">
+
 
 
 <div id="map"></div>
 
 
+
 <div id="pano"></div>
 
 
-</div>
-
-
-
 
 </div>
 
@@ -327,51 +367,8 @@ onclick="switchPage('menu')">
 
 
 
+</div>
 
-<script>
-
-
-window.onload=function(){
-
-
-google.accounts.id.initialize({
-
-client_id:
-CONFIG.GOOGLE_CLIENT_ID,
-
-
-callback:
-handleCredentialResponse
-
-});
-
-
-
-google.accounts.id.renderButton(
-
-document.getElementById(
-"google-login-area"
-),
-
-{
-
-theme:"outline",
-
-size:"large",
-
-width:260
-
-}
-
-);
-
-
-
-};
-
-
-
-</script>
 
 
 
@@ -382,33 +379,44 @@ width:260
 
 
 
+
 <script>
 
+window.onload=function(){
 
-let s=document.createElement("script");
+
+document
+.getElementById("g_id_onload")
+.dataset.client_id =
+CONFIG.GOOGLE_CLIENT_ID;
 
 
-s.src=
 
+let script =
+document.createElement("script");
+
+
+script.src =
 "https://maps.googleapis.com/maps/api/js?key="
 +
 CONFIG.GOOGLE_MAPS_API_KEY
 +
-"&libraries=geometry,places&callback=initMap&loading=async";
+"&libraries=geometry&callback=initMap&loading=async";
 
 
-
-s.async=true;
-
-s.defer=true;
+script.async=true;
 
 
-document.head.appendChild(s);
+script.defer=true;
 
+
+document.head.appendChild(script);
+
+
+}
 
 
 </script>
-
 
 
 
