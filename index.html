@@ -7,8 +7,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>
-AI Street View Video Generator
+Street View 自動影片產生器
 </title>
 
 
@@ -18,7 +19,6 @@ AI Street View Video Generator
 <script src="config.js"></script>
 
 
-<!-- Google Login -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 
@@ -29,18 +29,19 @@ AI Street View Video Generator
 <body>
 
 
+
 <!-- 首頁 -->
 
 <div id="page-menu">
 
 
 <h1>
-🚗 Street View 自動影片產生器
+🚗 Street View Video Generator
 </h1>
 
 
 <p>
-輸入起點與終點，自動生成街景影片
+輸入 A 到 B，自動產生街景影片
 </p>
 
 
@@ -49,7 +50,8 @@ AI Street View Video Generator
 
 
 
-<button 
+
+<button
 class="btn btn-map"
 onclick="switchPage('map')">
 
@@ -65,10 +67,12 @@ onclick="switchPage('map')">
 
 
 
-<!-- 主功能頁 -->
 
+<!-- 主功能 -->
 
-<div id="page-map-dashboard" class="hidden">
+<div 
+id="page-map-dashboard"
+class="hidden">
 
 
 
@@ -83,16 +87,17 @@ onclick="switchPage('map')">
 
 
 
-
 <div class="input-group">
 
 <label>
-起始位置 A
+📍 起始點 A
 </label>
 
-<input 
+
+<input
 id="start-input"
-placeholder="例如：台北車站">
+placeholder="例如：台北車站"
+autocomplete="off">
 
 
 </div>
@@ -100,16 +105,19 @@ placeholder="例如：台北車站">
 
 
 
+
 <div class="input-group">
 
+
 <label>
-目的地 B
+🏁 終點 B
 </label>
 
 
-<input 
+<input
 id="end-input"
-placeholder="例如：西門町">
+placeholder="例如：西門紅樓"
+autocomplete="off">
 
 
 </div>
@@ -123,9 +131,13 @@ id="btn-generate"
 class="btn-action"
 onclick="generateVideo()">
 
-🎬 產生影片
+
+🎬 產生街景影片
+
 
 </button>
+
+
 
 
 
@@ -149,7 +161,6 @@ onclick="generateVideo()">
 </div>
 
 
-
 <div id="progress-number">
 
 0%
@@ -161,15 +172,46 @@ onclick="generateVideo()">
 
 
 
-<!--影片區-->
 
-<div id="video-container"
+<!-- API資訊 -->
+
+
+<div class="api-box">
+
+
+<h3>
+📊 API 使用資訊
+</h3>
+
+
+
+<div id="api-estimate">
+
+尚未產生影片
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!--影片-->
+
+<div
+id="video-container"
 class="hidden">
 
 
 <h3>
-影片預覽
+🎥 影片預覽
 </h3>
+
 
 
 <video
@@ -196,7 +238,10 @@ class="btn-download">
 </a>
 
 
+
 </div>
+
+
 
 
 
@@ -206,13 +251,18 @@ class="btn-download">
 class="btn-back"
 onclick="switchPage('menu')">
 
+
 返回首頁
+
 
 </button>
 
 
 
 </div>
+
+
+
 
 
 
@@ -229,16 +279,20 @@ onclick="switchPage('menu')">
 </div>
 
 
+
 <div id="pano">
 
 </div>
 
 
-</div>
-
-
 
 </div>
+
+
+
+
+</div>
+
 
 
 
@@ -250,13 +304,8 @@ onclick="switchPage('menu')">
 <script>
 
 
-/*
-建立Google Login
-避免 client_id undefined
-*/
-
-
 window.onload=function(){
+
 
 
 google.accounts.id.initialize({
@@ -268,8 +317,9 @@ CONFIG.GOOGLE_CLIENT_ID,
 callback:
 handleCredentialResponse
 
-
 });
+
+
 
 
 
@@ -279,6 +329,7 @@ document.getElementById(
 "google-login-area"
 ),
 
+
 {
 
 theme:"outline",
@@ -287,10 +338,12 @@ size:"large",
 
 width:260
 
-
 }
 
+
+
 );
+
 
 
 };
@@ -298,8 +351,9 @@ width:260
 
 
 
-
 </script>
+
+
 
 
 
@@ -310,39 +364,41 @@ width:260
 
 
 
+
+
 <script>
 
 
-let googleMapScript =
+let mapScript =
 document.createElement(
 "script"
 );
 
 
 
-googleMapScript.src =
+mapScript.src =
+
 "https://maps.googleapis.com/maps/api/js?key="
 +
 CONFIG.GOOGLE_MAPS_API_KEY
 +
-"&libraries=geometry&callback=initMap&loading=async";
+"&libraries=geometry,places&callback=initMap&loading=async";
 
 
 
-googleMapScript.async=true;
+mapScript.async=true;
 
-googleMapScript.defer=true;
+mapScript.defer=true;
 
 
 
 document.head.appendChild(
-googleMapScript
+mapScript
 );
 
 
 
 </script>
-
 
 
 
