@@ -5,11 +5,11 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 
 <title>
-Street View 自動影片產生器
+Street View Video Generator
 </title>
 
 
@@ -30,18 +30,16 @@ Street View 自動影片產生器
 
 
 
-<!-- 首頁 -->
-
 <div id="page-menu">
 
 
 <h1>
-🚗 Street View Video Generator
+🚗 Street View AI Video
 </h1>
 
 
 <p>
-輸入 A 到 B，自動產生街景影片
+自動產生 A 到 B 街景影片
 </p>
 
 
@@ -52,10 +50,10 @@ Street View 自動影片產生器
 
 
 <button
-class="btn btn-map"
+class="btn-map"
 onclick="switchPage('map')">
 
-🗺️ 進入地圖功能
+🗺️ 進入地圖
 
 </button>
 
@@ -67,16 +65,12 @@ onclick="switchPage('map')">
 
 
 
-
-<!-- 主功能 -->
-
-<div 
-id="page-map-dashboard"
+<div id="page-map-dashboard"
 class="hidden">
 
 
 
-<!-- 左側 -->
+
 
 <div class="sidebar">
 
@@ -87,40 +81,136 @@ class="hidden">
 
 
 
+
+<!-- 起點 -->
+
+
+<div class="location-row">
+
+
 <div class="input-group">
 
+
 <label>
-📍 起始點 A
+📍 起始位置 A
 </label>
 
 
 <input
 id="start-input"
-placeholder="例如：台北車站"
-autocomplete="off">
+placeholder="輸入起點">
 
 
 </div>
 
 
 
+<button
+class="location-btn"
+onclick="locateStart()">
+
+定位
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- 終點 -->
+
+
+<div class="location-row">
 
 
 <div class="input-group">
 
 
 <label>
-🏁 終點 B
+🏁 目的地 B
 </label>
 
 
 <input
 id="end-input"
-placeholder="例如：西門紅樓"
-autocomplete="off">
+placeholder="輸入目的地">
 
 
 </div>
+
+
+
+<button
+class="location-btn"
+onclick="locateEnd()">
+
+定位
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- 播放模式 -->
+
+
+<div class="mode-box">
+
+
+<h3>
+🎬 播放模式
+</h3>
+
+
+
+<label>
+
+<input
+type="radio"
+name="play-mode"
+value="image"
+checked>
+
+圖片停留模式
+(每張2秒)
+
+</label>
+
+
+
+<br>
+
+
+
+<label>
+
+<input
+type="radio"
+name="play-mode"
+value="animation">
+
+
+沿路動畫模式
+
+</label>
+
+
+
+</div>
+
 
 
 
@@ -132,7 +222,7 @@ class="btn-action"
 onclick="generateVideo()">
 
 
-🎬 產生街景影片
+🎥 產生影片
 
 
 </button>
@@ -142,11 +232,13 @@ onclick="generateVideo()">
 
 
 
+
 <div id="status-text">
 
-等待輸入路線
+等待輸入
 
 </div>
+
 
 
 
@@ -154,11 +246,10 @@ onclick="generateVideo()">
 
 <div class="progress-box">
 
-<div id="progress-bar">
+<div id="progress-bar"></div>
 
 </div>
 
-</div>
 
 
 <div id="progress-number">
@@ -173,21 +264,19 @@ onclick="generateVideo()">
 
 
 
-<!-- API資訊 -->
-
 
 <div class="api-box">
 
 
 <h3>
-📊 API 使用資訊
+📊 API 使用估算
 </h3>
 
 
 
 <div id="api-estimate">
 
-尚未產生影片
+尚未開始
 
 </div>
 
@@ -200,16 +289,12 @@ onclick="generateVideo()">
 
 
 
-
-<!--影片-->
-
-<div
-id="video-container"
+<div id="video-container"
 class="hidden">
 
 
 <h3>
-🎥 影片預覽
+影片預覽
 </h3>
 
 
@@ -224,7 +309,7 @@ controls>
 
 <a
 id="download-link"
-download="streetview_trip.webm">
+download="streetview.webm">
 
 
 <button
@@ -238,8 +323,8 @@ class="btn-download">
 </a>
 
 
-
 </div>
+
 
 
 
@@ -251,14 +336,13 @@ class="btn-download">
 class="btn-back"
 onclick="switchPage('menu')">
 
-
 返回首頁
-
 
 </button>
 
 
 
+
 </div>
 
 
@@ -268,22 +352,14 @@ onclick="switchPage('menu')">
 
 
 
-
-<!--右側-->
 
 <div class="map-container">
 
 
-<div id="map">
-
-</div>
+<div id="map"></div>
 
 
-
-<div id="pano">
-
-</div>
-
+<div id="pano"></div>
 
 
 </div>
@@ -291,10 +367,9 @@ onclick="switchPage('menu')">
 
 
 
+
+
 </div>
-
-
-
 
 
 
@@ -305,7 +380,6 @@ onclick="switchPage('menu')">
 
 
 window.onload=function(){
-
 
 
 google.accounts.id.initialize({
@@ -321,14 +395,11 @@ handleCredentialResponse
 
 
 
-
-
 google.accounts.id.renderButton(
 
 document.getElementById(
 "google-login-area"
 ),
-
 
 {
 
@@ -338,9 +409,8 @@ size:"large",
 
 width:260
 
+
 }
-
-
 
 );
 
@@ -349,12 +419,7 @@ width:260
 };
 
 
-
-
 </script>
-
-
-
 
 
 
@@ -366,17 +431,14 @@ width:260
 
 
 
+
 <script>
 
 
-let mapScript =
-document.createElement(
-"script"
-);
+let s=document.createElement("script");
 
 
-
-mapScript.src =
+s.src=
 
 "https://maps.googleapis.com/maps/api/js?key="
 +
@@ -385,20 +447,18 @@ CONFIG.GOOGLE_MAPS_API_KEY
 "&libraries=geometry,places&callback=initMap&loading=async";
 
 
+s.async=true;
 
-mapScript.async=true;
-
-mapScript.defer=true;
-
+s.defer=true;
 
 
-document.head.appendChild(
-mapScript
-);
+
+document.head.appendChild(s);
 
 
 
 </script>
+
 
 
 

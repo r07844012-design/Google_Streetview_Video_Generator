@@ -5,26 +5,18 @@ box-sizing:border-box;
 }
 
 
-
 body{
-
 
 margin:0;
 
-
 width:100vw;
 
-
 height:100vh;
-
 
 font-family:
 
 "Segoe UI",
-Arial,
-sans-serif;
-
-
+Arial;
 
 background:#f5f7fb;
 
@@ -43,15 +35,21 @@ display:none!important;
 
 
 
-/* =================
-首頁
-================= */
-
-
 #page-menu{
 
 
-width:430px;
+position:absolute;
+
+
+top:50%;
+
+
+left:50%;
+
+
+transform:
+translate(-50%,-50%);
+
 
 
 background:white;
@@ -63,57 +61,16 @@ padding:45px;
 border-radius:20px;
 
 
-position:absolute;
 
-
-left:50%;
-
-
-top:50%;
-
-
-transform:
-translate(-50%,-50%);
+box-shadow:
+0 15px 40px rgba(0,0,0,.15);
 
 
 
 text-align:center;
 
 
-
-box-shadow:
-
-0 15px 40px rgba(0,0,0,.15);
-
-
-
 }
-
-
-
-
-#page-menu h1{
-
-
-color:#333;
-
-
-}
-
-
-
-#page-menu p{
-
-
-color:#777;
-
-
-margin-bottom:30px;
-
-
-}
-
-
 
 
 
@@ -124,14 +81,13 @@ margin-bottom:30px;
 width:260px;
 
 
-height:52px;
+height:50px;
 
 
 border:none;
 
 
 border-radius:30px;
-
 
 
 background:
@@ -150,22 +106,12 @@ color:white;
 font-size:17px;
 
 
-font-weight:bold;
-
-
 cursor:pointer;
-
 
 
 }
 
 
-
-
-
-/* =================
-主畫面
-================= */
 
 
 
@@ -186,29 +132,16 @@ display:flex;
 
 
 
-
-
-/* =================
-左側
-================= */
-
-
 .sidebar{
 
 
-width:380px;
-
-
-padding:30px;
+width:400px;
 
 
 background:white;
 
 
-box-shadow:
-
-3px 0 20px rgba(0,0,0,.12);
-
+padding:25px;
 
 
 display:flex;
@@ -217,18 +150,34 @@ display:flex;
 flex-direction:column;
 
 
+box-shadow:
+
+3px 0 20px rgba(0,0,0,.12);
+
+
 }
 
 
 
 
-.sidebar h2{
 
-margin-top:0;
+
+.location-row{
+
+
+display:flex;
+
+
+align-items:end;
+
+
+gap:10px;
+
+
+margin-bottom:15px;
+
 
 }
-
-
 
 
 
@@ -236,7 +185,7 @@ margin-top:0;
 .input-group{
 
 
-margin-bottom:18px;
+flex:1;
 
 
 }
@@ -252,10 +201,7 @@ display:block;
 font-weight:bold;
 
 
-margin-bottom:8px;
-
-
-color:#555;
+margin-bottom:6px;
 
 
 }
@@ -266,37 +212,19 @@ color:#555;
 .input-group input{
 
 
-height:45px;
-
-
 width:100%;
 
 
-padding:10px 15px;
+height:42px;
 
 
-border:
-
-1px solid #ddd;
+border-radius:10px;
 
 
-border-radius:12px;
+border:1px solid #ccc;
 
 
-font-size:15px;
-
-
-}
-
-
-
-.input-group input:focus{
-
-
-outline:none;
-
-
-border-color:#4285f4;
+padding:10px;
 
 
 }
@@ -304,17 +232,57 @@ border-color:#4285f4;
 
 
 
+.location-btn{
+
+
+height:42px;
+
+
+width:70px;
+
+
+border:none;
+
+
+border-radius:10px;
+
+
+background:#4285f4;
+
+
+color:white;
+
+
+cursor:pointer;
+
+
+}
 
 
 
 
-/* Button */
+
+.mode-box{
+
+
+margin:15px 0;
+
+
+padding:15px;
+
+
+background:#f5f7fb;
+
+
+border-radius:15px;
+
+
+}
+
+
 
 
 .btn-action{
-
-
-margin-top:10px;
 
 
 height:50px;
@@ -324,10 +292,6 @@ border:none;
 
 
 border-radius:30px;
-
-
-cursor:pointer;
-
 
 
 background:
@@ -349,45 +313,11 @@ font-size:17px;
 font-weight:bold;
 
 
-}
-
-
-
-
-
-
-.btn-action:hover{
-
-
-transform:
-translateY(-2px);
+cursor:pointer;
 
 
 }
 
-
-
-
-
-
-/* =================
-進度
-================= */
-
-
-#status-text{
-
-
-text-align:center;
-
-
-margin-top:20px;
-
-
-color:#555;
-
-
-}
 
 
 
@@ -395,19 +325,19 @@ color:#555;
 .progress-box{
 
 
-margin-top:15px;
-
-
 height:18px;
 
 
-background:#eee;
+background:#ddd;
 
 
 border-radius:20px;
 
 
 overflow:hidden;
+
+
+margin-top:15px;
 
 
 }
@@ -442,96 +372,19 @@ transition:.3s;
 
 
 
-#progress-number{
-
-
-text-align:center;
-
-
-margin-top:5px;
-
-
-}
-
-
-
-
-
-
-/* =================
-API BOX
-================= */
-
-
-
 .api-box{
 
 
-margin-top:25px;
+margin-top:20px;
+
+
+background:#f7f7f7;
 
 
 padding:15px;
 
 
-background:#f7f9fc;
-
-
 border-radius:15px;
-
-
-
-}
-
-
-
-.api-box h3{
-
-
-margin-top:0;
-
-
-font-size:16px;
-
-
-color:#444;
-
-
-}
-
-
-
-#api-estimate{
-
-
-font-size:14px;
-
-
-line-height:1.6;
-
-
-color:#666;
-
-
-}
-
-
-
-
-
-
-/* =================
-影片
-================= */
-
-
-
-#video-container{
-
-
-margin-top:25px;
-
-
-text-align:center;
 
 
 }
@@ -548,13 +401,7 @@ width:100%;
 border-radius:15px;
 
 
-box-shadow:
-
-0 5px 20px rgba(0,0,0,.2);
-
-
 }
-
 
 
 
@@ -562,27 +409,22 @@ box-shadow:
 .btn-download{
 
 
-margin:20px auto;
-
-
 display:block;
+
+
+margin:20px auto;
 
 
 width:220px;
 
 
-height:48px;
-
+height:45px;
 
 
 border:none;
 
 
-border-radius:30px;
-
-
-
-cursor:pointer;
+border-radius:25px;
 
 
 background:
@@ -598,17 +440,10 @@ linear-gradient(
 color:white;
 
 
-font-weight:bold;
-
-
-font-size:16px;
+cursor:pointer;
 
 
 }
-
-
-
-
 
 
 
@@ -642,14 +477,6 @@ cursor:pointer;
 
 
 
-
-
-/* =================
-右側地圖
-================= */
-
-
-
 .map-container{
 
 
@@ -674,7 +501,6 @@ height:50%;
 
 
 }
-
 
 
 

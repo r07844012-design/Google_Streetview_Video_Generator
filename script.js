@@ -3,27 +3,26 @@ let panorama;
 
 let directionsService;
 let directionsRenderer;
-
-let startMarker = null;
-let endMarker = null;
-
-let startPosition = null;
-let endPosition = null;
-
-let autocompleteStart;
-let autocompleteEnd;
+let geocoder;
 
 
+let startMarker=null;
+let endMarker=null;
 
-// ================================
+
+let startPosition=null;
+let endPosition=null;
+
+
+
+// =================================
 // Google Login
-// ================================
-
+// =================================
 
 function handleCredentialResponse(response){
 
     console.log(
-        "Google Token:",
+        "Google Login Token:",
         response.credential
     );
 
@@ -37,9 +36,11 @@ function handleCredentialResponse(response){
 
 
 
-// ================================
-// 頁面切換
-// ================================
+
+
+// =================================
+// Page Switch
+// =================================
 
 
 function switchPage(page){
@@ -100,7 +101,6 @@ function switchPage(page){
 
     }
 
-
 }
 
 
@@ -109,16 +109,17 @@ function switchPage(page){
 
 
 
-// ================================
-// 初始化 Google Map
-// ================================
+
+// =================================
+// Init Map
+// =================================
 
 
 function initMap(){
 
 
 
-    let defaultPosition={
+    let defaultPos={
 
         lat:25.0478,
 
@@ -129,18 +130,13 @@ function initMap(){
 
 
 
+    map=new google.maps.Map(
 
-    map =
-    new google.maps.Map(
-
-        document.getElementById(
-            "map"
-        ),
+        document.getElementById("map"),
 
         {
 
-            center:
-            defaultPosition,
+            center:defaultPos,
 
             zoom:15
 
@@ -155,17 +151,13 @@ function initMap(){
     panorama =
     new google.maps.StreetViewPanorama(
 
-        document.getElementById(
-            "pano"
-        ),
+        document.getElementById("pano"),
 
         {
 
-            position:
-            defaultPosition,
+            position:defaultPos,
 
-            pov:
-            {
+            pov:{
 
                 heading:0,
 
@@ -179,12 +171,9 @@ function initMap(){
 
 
 
-
-
     map.setStreetView(
         panorama
     );
-
 
 
 
@@ -207,9 +196,9 @@ function initMap(){
 
 
 
+    geocoder =
+    new google.maps.Geocoder();
 
-
-    initAutocomplete();
 
 }
 
@@ -220,219 +209,253 @@ function initMap(){
 
 
 
-// ================================
-// 地址搜尋
-// ================================
+
+// =================================
+// 定位起點
+// =================================
 
 
-function initAutocomplete(){
+function locateStart(){
 
 
 
-    autocompleteStart =
-    new google.maps.places.Autocomplete(
+    let address =
+    document
+    .getElementById(
+        "start-input"
+    )
+    .value;
 
-        document.getElementById(
-            "start-input"
-        )
 
+
+    if(!address){
+
+        alert(
+            "請輸入起點"
+        );
+
+        return;
+
+    }
+
+
+
+    geocodeAddress(
+        address,
+        "start"
     );
 
 
+}
 
 
-    autocompleteEnd =
-    new google.maps.places.Autocomplete(
 
-        document.getElementById(
-            "end-input"
-        )
 
+
+
+
+
+
+// =================================
+// 定位終點
+// =================================
+
+
+function locateEnd(){
+
+
+    let address =
+    document
+    .getElementById(
+        "end-input"
+    )
+    .value;
+
+
+
+    if(!address){
+
+        alert(
+            "請輸入目的地"
+        );
+
+        return;
+
+    }
+
+
+
+    geocodeAddress(
+        address,
+        "end"
     );
 
 
-
-
-
-    autocompleteStart
-    .addListener(
-        "place_changed",
-        ()=>{
-
-
-            let place =
-            autocompleteStart
-            .getPlace();
-
-
-
-            if(!place.geometry)
-                return;
+}
 
 
 
 
-            startPosition =
-            place.geometry.location;
 
 
 
-            updateStartMarker();
+
+
+// =================================
+// 地址轉座標
+// =================================
+
+
+function geocodeAddress(address,type){
 
 
 
-            moveStreetView(
-                startPosition
+    geocoder.geocode(
+
+    {
+
+        address:address
+
+    },
+
+    function(results,status){
+
+
+
+        if(status==="OK"){
+
+
+
+            let pos =
+            results[0]
+            .geometry
+            .location;
+
+
+
+
+            if(type==="start"){
+
+
+                startPosition=pos;
+
+
+                if(startMarker)
+                    startMarker.setMap(null);
+
+
+
+                startMarker =
+                new google.maps.Marker({
+
+                    map:map,
+
+                    position:pos,
+
+                    label:"A",
+
+                    animation:
+                    google.maps.Animation.DROP
+
+                });
+
+
+
+                panorama.setPosition(
+                    pos
+                );
+
+
+
+            }
+
+            else{
+
+
+
+                endPosition=pos;
+
+
+
+                if(endMarker)
+                    endMarker.setMap(null);
+
+
+
+                endMarker =
+                new google.maps.Marker({
+
+                    map:map,
+
+                    position:pos,
+
+                    label:"B",
+
+                    animation:
+                    google.maps.Animation.DROP
+
+                });
+
+
+            }
+
+
+
+
+            map.panTo(pos);
+
+
+
+        }
+
+        else{
+
+
+            alert(
+                "找不到位置"
             );
 
 
         }
 
-    );
-
-
-
-
-
-
-
-    autocompleteEnd
-    .addListener(
-        "place_changed",
-        ()=>{
-
-
-            let place =
-            autocompleteEnd
-            .getPlace();
-
-
-
-            if(!place.geometry)
-                return;
-
-
-
-
-            endPosition =
-            place.geometry.location;
-
-
-
-            updateEndMarker();
-
-
-
-        }
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-
-// ================================
-// Marker
-// ================================
-
-
-function updateStartMarker(){
-
-
-
-    if(startMarker)
-        startMarker.setMap(null);
-
-
-
-    startMarker =
-    new google.maps.Marker({
-
-        map:map,
-
-        position:startPosition,
-
-        label:"A",
-
-        animation:
-        google.maps.Animation.DROP
 
     });
 
 
-
-    map.panTo(
-        startPosition
-    );
-
 }
 
 
 
 
 
-function updateEndMarker(){
-
-
-
-    if(endMarker)
-        endMarker.setMap(null);
-
-
-
-    endMarker =
-    new google.maps.Marker({
-
-        map:map,
-
-        position:endPosition,
-
-        label:"B",
-
-        animation:
-        google.maps.Animation.DROP
-
-    });
-
-
-
-    map.panTo(
-        endPosition
-    );
-
-}
 
 
 
 
 
-// ================================
-// Street View 移動
-// ================================
+
+// =================================
+// Progress
+// =================================
 
 
-function moveStreetView(position){
+function updateProgress(v){
 
 
-    panorama.setPosition(
-        position
-    );
+
+document
+.getElementById(
+"progress-bar"
+)
+.style.width=v+"%";
 
 
-    panorama.setPov({
 
-        heading:0,
-
-        pitch:10
-
-    });
+document
+.getElementById(
+"progress-number"
+)
+.innerText=v+"%";
 
 
 }
@@ -445,68 +468,62 @@ function moveStreetView(position){
 
 
 
-function updateProgress(value){
-
-
-
-    document
-    .getElementById(
-        "progress-bar"
-    )
-    .style.width =
-    value+"%";
-
-
-
-    document
-    .getElementById(
-        "progress-number"
-    )
-    .innerText =
-    value+"%";
-
-
-}
-
-
-
-
-
-
-
-
-
-// ================================
+// =================================
 // 產生影片
-// ================================
+// =================================
 
 
 async function generateVideo(){
 
 
 
+let start =
+document
+.getElementById(
+"start-input"
+)
+.value;
+
+
+
+let end =
+document
+.getElementById(
+"end-input"
+)
+.value;
+
+
+
 let status =
-document.getElementById(
-    "status-text"
+document
+.getElementById(
+"status-text"
 );
 
 
 
-let button =
-document.getElementById(
-    "btn-generate"
+let mode =
+document
+.querySelector(
+"input[name='play-mode']:checked"
+)
+.value;
+
+
+
+if(!start || !end){
+
+
+alert(
+"請輸入起點與目的地"
 );
 
 
-
-let apiBox =
-document.getElementById(
-    "api-estimate"
-);
+return;
 
 
-
-button.disabled=true;
+}
 
 
 
@@ -514,24 +531,10 @@ updateProgress(0);
 
 
 
-status.innerHTML =
-"正在規劃路線...";
+status.innerHTML=
+"建立路線...";
 
 
-
-
-
-let start =
-document.getElementById(
-"start-input"
-).value;
-
-
-
-let end =
-document.getElementById(
-"end-input"
-).value;
 
 
 
@@ -551,8 +554,7 @@ google.maps.TravelMode.DRIVING
 
 },
 
-
-async(result,statusCode)=>{
+async function(result,statusCode){
 
 
 
@@ -560,11 +562,8 @@ if(statusCode!=="OK"){
 
 
 alert(
-"找不到路線"
+"路線建立失敗"
 );
-
-
-button.disabled=false;
 
 
 return;
@@ -575,13 +574,10 @@ return;
 
 
 
-
-
 directionsRenderer
 .setDirections(
 result
 );
-
 
 
 
@@ -599,11 +595,9 @@ result
 .forEach(step=>{
 
 
-step.path.forEach(point=>{
+step.path.forEach(p=>{
 
-
-path.push(point);
-
+path.push(p);
 
 });
 
@@ -615,20 +609,13 @@ path.push(point);
 
 
 
-// 控制 API 消耗
-
-const FRAME_COUNT=40;
+let frameCount=40;
 
 
 
-let gap =
-Math.max(
-1,
+let step=
 Math.floor(
-path.length /
-FRAME_COUNT
-)
-
+path.length/frameCount
 );
 
 
@@ -640,7 +627,7 @@ let frames=[];
 for(
 let i=0;
 i<path.length;
-i+=gap
+i+=step
 ){
 
 
@@ -656,32 +643,39 @@ path[i]
 
 
 
-apiBox.innerHTML=`
+document
+.getElementById(
+"api-estimate"
+)
+.innerHTML=
 
-本次影片設定：
+`
 
-<br>
-
-Street View 圖片：
-
-<b>
-${frames.length}
-</b>
-張
+本次預估：
 
 <br>
 
-預估 API 呼叫：
+Street View 請求：
 
-<b>
-${frames.length}
-</b>
+<b>${frames.length}</b>
+
 次
 
 <br>
 
-實際剩餘額度：
+影片模式：
+
+<b>
+
+${mode==="image"?
+"圖片停留模式":
+"沿路動畫模式"}
+
+</b>
+
 <br>
+
+剩餘額度：
 
 請至 Google Cloud Console 查看
 
@@ -693,12 +687,19 @@ ${frames.length}
 
 
 
-// StreetView跳到開始點
 
-moveStreetView(
-frames[0]
+
+if(mode==="animation"){
+
+
+
+await playStreetAnimation(
+frames
 );
 
+
+
+}
 
 
 
@@ -709,30 +710,22 @@ let images=[];
 
 
 
-status.innerHTML =
-"取得街景圖片...";
+status.innerHTML=
+"下載街景圖片...";
 
 
 
 
 
-for(
-let i=0;
-i<frames.length;
-i++
-){
+for(let i=0;i<frames.length;i++){
 
 
 
-let current =
-frames[i];
+let current=frames[i];
 
 
-
-let next =
-frames[i+1] || current;
-
-
+let next=
+frames[i+1]||current;
 
 
 
@@ -746,9 +739,7 @@ next
 
 
 
-
-
-let url =
+let url=
 
 "https://maps.googleapis.com/maps/api/streetview?"
 
@@ -794,24 +785,16 @@ CONFIG.GOOGLE_MAPS_API_KEY;
 
 
 
-
-
 images.push(url);
 
 
 
-
-
 updateProgress(
-
 Math.floor(
-
 (i/frames.length)*60
-
 )
 
 );
-
 
 
 }
@@ -822,16 +805,13 @@ Math.floor(
 
 
 
-status.innerHTML =
-"正在製作影片...";
-
-
-
-
-
-let videoURL =
+let video =
 await createWebM(
-images
+
+images,
+
+mode==="image"?2000:300
+
 );
 
 
@@ -843,10 +823,7 @@ document
 .getElementById(
 "preview-video"
 )
-.src =
-videoURL;
-
-
+.src=video;
 
 
 
@@ -854,9 +831,7 @@ document
 .getElementById(
 "download-link"
 )
-.href =
-videoURL;
-
+.href=video;
 
 
 
@@ -870,25 +845,15 @@ document
 
 
 
-
-
 updateProgress(100);
 
 
 
-status.innerHTML =
+status.innerHTML=
 "完成";
 
 
-
-button.disabled=false;
-
-
-
-}
-
-);
-
+});
 
 
 }
@@ -901,19 +866,67 @@ button.disabled=false;
 
 
 
-// ================================
-// Canvas 轉 WebM
-// ================================
+// =================================
+// StreetView 動畫
+// =================================
 
 
-async function createWebM(images){
+async function playStreetAnimation(frames){
 
 
 
-let canvas =
-document.createElement(
-"canvas"
+for(let p of frames){
+
+
+
+panorama.setPosition(
+p
 );
+
+
+
+await wait(800);
+
+
+}
+
+
+}
+
+
+
+
+
+
+function wait(ms){
+
+
+return new Promise(
+resolve=>setTimeout(resolve,ms)
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// =================================
+// WebM
+// =================================
+
+
+async function createWebM(images,delay){
+
+
+
+let canvas=
+document.createElement("canvas");
 
 
 
@@ -923,34 +936,23 @@ canvas.height=360;
 
 
 
-let ctx =
-canvas.getContext(
-"2d"
-);
+let ctx=
+canvas.getContext("2d");
 
 
 
-let stream =
-canvas.captureStream(
-10
-);
+let stream=
+canvas.captureStream(10);
 
 
 
-
-
-let recorder =
+let recorder=
 new MediaRecorder(
 stream,
 {
-
-mimeType:
-"video/webm"
-
+mimeType:"video/webm"
 }
-
 );
-
 
 
 
@@ -958,14 +960,11 @@ let chunks=[];
 
 
 
-recorder.ondataavailable =
-e=>{
-
+recorder.ondataavailable=e=>{
 
 if(e.data.size>0)
 
 chunks.push(e.data);
-
 
 };
 
@@ -985,14 +984,10 @@ for(let src of images){
 await new Promise(resolve=>{
 
 
-let img =
-new Image();
+let img=new Image();
 
 
-
-img.crossOrigin =
-"anonymous";
-
+img.crossOrigin="anonymous";
 
 
 
@@ -1000,24 +995,18 @@ img.onload=()=>{
 
 
 ctx.drawImage(
-
 img,
-
 0,
-
 0,
-
 640,
-
 360
-
 );
 
 
 
 setTimeout(
 resolve,
-100
+delay
 );
 
 
@@ -1026,12 +1015,12 @@ resolve,
 
 
 
-
 img.src=src;
 
 
 
 });
+
 
 
 }
@@ -1052,32 +1041,23 @@ return new Promise(resolve=>{
 recorder.onstop=()=>{
 
 
-let blob =
+let blob=
 new Blob(
-
 chunks,
-
 {
-
 type:"video/webm"
-
 }
-
 );
-
 
 
 
 resolve(
-
-URL.createObjectURL(
-blob
-)
-
+URL.createObjectURL(blob)
 );
 
 
 };
+
 
 
 });
