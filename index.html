@@ -18,12 +18,10 @@ Street View Video Generator
 
 <script src="config.js"></script>
 
-
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 
 </head>
-
 
 
 <body>
@@ -39,7 +37,7 @@ Street View Video Generator
 
 
 <p>
-自動產生 A 到 B 街景影片
+自動生成 A 到 B 街景動畫
 </p>
 
 
@@ -53,12 +51,15 @@ Street View Video Generator
 class="btn-map"
 onclick="switchPage('map')">
 
-🗺️ 進入地圖
+🗺️ 進入地圖功能
 
 </button>
 
 
+
 </div>
+
+
 
 
 
@@ -75,6 +76,7 @@ class="hidden">
 <div class="sidebar">
 
 
+
 <h2>
 路徑設定
 </h2>
@@ -82,27 +84,22 @@ class="hidden">
 
 
 
-<!-- 起點 -->
-
 
 <div class="location-row">
 
 
 <div class="input-group">
 
-
 <label>
-📍 起始位置 A
+📍 起始位置
 </label>
 
 
 <input
 id="start-input"
-placeholder="輸入起點">
-
+placeholder="例如：台北車站">
 
 </div>
-
 
 
 <button
@@ -123,9 +120,6 @@ onclick="locateStart()">
 
 
 
-<!-- 終點 -->
-
-
 <div class="location-row">
 
 
@@ -133,13 +127,13 @@ onclick="locateStart()">
 
 
 <label>
-🏁 目的地 B
+🏁 目的地
 </label>
 
 
 <input
 id="end-input"
-placeholder="輸入目的地">
+placeholder="例如：西門紅樓">
 
 
 </div>
@@ -155,61 +149,39 @@ onclick="locateEnd()">
 </button>
 
 
-
 </div>
 
 
 
 
 
-
-
-<!-- 播放模式 -->
 
 
 <div class="mode-box">
 
 
 <h3>
-🎬 播放模式
+🎬 影片模式
 </h3>
 
 
-
-<label>
-
-<input
-type="radio"
-name="play-mode"
-value="image"
-checked>
-
-圖片停留模式
-(每張2秒)
-
-</label>
+<p>
+✓ Street View 沿路動畫模式
+</p>
 
 
-
-<br>
-
-
-
-<label>
-
-<input
-type="radio"
-name="play-mode"
-value="animation">
+<p>
+✓ 每約20~30公尺取樣
+</p>
 
 
-沿路動畫模式
-
-</label>
-
+<p>
+✓ 每個畫面停留1.5秒
+</p>
 
 
 </div>
+
 
 
 
@@ -222,10 +194,11 @@ class="btn-action"
 onclick="generateVideo()">
 
 
-🎥 產生影片
+🎥 開始產生影片
 
 
 </button>
+
 
 
 
@@ -243,10 +216,11 @@ onclick="generateVideo()">
 
 
 
-
 <div class="progress-box">
 
+
 <div id="progress-bar"></div>
+
 
 </div>
 
@@ -257,8 +231,6 @@ onclick="generateVideo()">
 0%
 
 </div>
-
-
 
 
 
@@ -276,12 +248,13 @@ onclick="generateVideo()">
 
 <div id="api-estimate">
 
-尚未開始
+尚未產生
 
 </div>
 
 
 </div>
+
 
 
 
@@ -294,33 +267,15 @@ class="hidden">
 
 
 <h3>
-影片預覽
+🎥 完成影片
 </h3>
-
 
 
 <video
 id="preview-video"
 controls>
+
 </video>
-
-
-
-
-<a
-id="download-link"
-download="streetview.webm">
-
-
-<button
-class="btn-download">
-
-⬇️ 下載影片
-
-</button>
-
-
-</a>
 
 
 </div>
@@ -339,7 +294,6 @@ onclick="switchPage('menu')">
 返回首頁
 
 </button>
-
 
 
 
@@ -363,8 +317,6 @@ onclick="switchPage('menu')">
 
 
 </div>
-
-
 
 
 
@@ -409,7 +361,6 @@ size:"large",
 
 width:260
 
-
 }
 
 );
@@ -419,16 +370,15 @@ width:260
 };
 
 
+
 </script>
 
 
 
 
 
+
 <script src="script.js"></script>
-
-
-
 
 
 
@@ -447,10 +397,10 @@ CONFIG.GOOGLE_MAPS_API_KEY
 "&libraries=geometry,places&callback=initMap&loading=async";
 
 
+
 s.async=true;
 
 s.defer=true;
-
 
 
 document.head.appendChild(s);
