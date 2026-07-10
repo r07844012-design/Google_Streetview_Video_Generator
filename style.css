@@ -31,14 +31,11 @@ background:#f5f7fb;
 
 
 
-
-
 .hidden{
 
 display:none!important;
 
 }
-
 
 
 
@@ -63,7 +60,6 @@ left:50%;
 
 
 transform:
-
 translate(-50%,-50%);
 
 
@@ -83,12 +79,10 @@ text-align:center;
 
 
 box-shadow:
-
 0 10px 35px rgba(0,0,0,.15);
 
 
 }
-
 
 
 
@@ -132,6 +126,7 @@ cursor:pointer;
 
 
 
+
 /* =====================
 主畫面
 ===================== */
@@ -158,6 +153,11 @@ display:flex;
 
 
 
+/* =====================
+左側
+===================== */
+
+
 .sidebar{
 
 
@@ -167,10 +167,13 @@ width:360px;
 height:100vh;
 
 
+min-height:0;
+
+
 background:white;
 
 
-padding:18px;
+padding:15px;
 
 
 display:flex;
@@ -179,7 +182,7 @@ display:flex;
 flex-direction:column;
 
 
-gap:10px;
+gap:8px;
 
 
 box-shadow:
@@ -210,8 +213,10 @@ justify-content:space-between;
 align-items:center;
 
 
-}
+flex-shrink:0;
 
+
+}
 
 
 
@@ -221,10 +226,11 @@ align-items:center;
 margin:0;
 
 
-font-size:21px;
+font-size:20px;
 
 
 }
+
 
 
 
@@ -235,7 +241,7 @@ font-size:21px;
 .api-button{
 
 
-height:34px;
+height:32px;
 
 
 padding:0 12px;
@@ -265,7 +271,32 @@ font-size:13px;
 
 
 
+.api-button:hover{
 
+
+background:#3367d6;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* 定位區 */
+
+
+.location-box{
+
+
+flex-shrink:0;
+
+
+}
 
 
 
@@ -282,23 +313,19 @@ font-weight:bold;
 
 
 
-
-
-
 .location-row{
 
 
 display:flex;
 
 
-gap:8px;
+gap:6px;
 
 
-margin-top:5px;
+margin-top:4px;
 
 
 }
-
 
 
 
@@ -309,7 +336,7 @@ margin-top:5px;
 flex:1;
 
 
-height:38px;
+height:34px;
 
 
 border-radius:8px;
@@ -318,7 +345,10 @@ border-radius:8px;
 border:1px solid #ccc;
 
 
-padding:8px;
+padding:6px;
+
+
+font-size:14px;
 
 
 }
@@ -329,10 +359,10 @@ padding:8px;
 .location-btn{
 
 
-width:65px;
+width:60px;
 
 
-height:38px;
+height:34px;
 
 
 border:none;
@@ -350,6 +380,9 @@ color:white;
 cursor:pointer;
 
 
+font-size:13px;
+
+
 }
 
 
@@ -359,16 +392,23 @@ cursor:pointer;
 
 
 
+
+/* 產生按鈕 */
+
+
 .btn-action{
 
 
-height:45px;
+height:40px;
+
+
+flex-shrink:0;
 
 
 border:none;
 
 
-border-radius:25px;
+border-radius:22px;
 
 
 background:
@@ -383,7 +423,7 @@ linear-gradient(
 color:white;
 
 
-font-size:16px;
+font-size:15px;
 
 
 cursor:pointer;
@@ -398,7 +438,10 @@ cursor:pointer;
 
 
 
-/* 狀態 */
+
+/* =====================
+狀態
+===================== */
 
 
 .status-card{
@@ -407,16 +450,35 @@ cursor:pointer;
 background:#f7f8fb;
 
 
-padding:12px;
+padding:8px 10px;
 
 
-border-radius:12px;
+border-radius:10px;
 
 
-font-size:14px;
+font-size:13px;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+gap:8px;
+
+
+white-space:nowrap;
+
+
+overflow:hidden;
+
+
+flex-shrink:0;
 
 
 }
+
 
 
 
@@ -424,6 +486,24 @@ font-size:14px;
 
 
 font-weight:bold;
+
+
+flex-shrink:0;
+
+
+}
+
+
+
+
+
+#status-text{
+
+
+overflow:hidden;
+
+
+text-overflow:ellipsis;
 
 
 }
@@ -435,13 +515,16 @@ font-weight:bold;
 .estimate-time{
 
 
-margin-top:8px;
+margin-left:auto;
 
 
-font-size:13px;
+font-size:12px;
 
 
 color:#666;
+
+
+white-space:nowrap;
 
 
 }
@@ -453,19 +536,22 @@ color:#666;
 
 
 
-/* 進度 */
+
+/* =====================
+進度
+===================== */
 
 
 .progress-container{
 
 
-padding:10px;
+padding:7px 10px;
 
 
 background:white;
 
 
-border-radius:12px;
+border-radius:10px;
 
 
 box-shadow:
@@ -473,7 +559,11 @@ box-shadow:
 0 2px 8px rgba(0,0,0,.1);
 
 
+flex-shrink:0;
+
+
 }
+
 
 
 
@@ -487,7 +577,10 @@ display:flex;
 justify-content:space-between;
 
 
-font-size:13px;
+font-size:12px;
+
+
+margin-bottom:5px;
 
 
 }
@@ -499,7 +592,7 @@ font-size:13px;
 .progress-bg{
 
 
-height:14px;
+height:12px;
 
 
 background:#ddd;
@@ -539,7 +632,10 @@ transition:.3s;
 
 
 
-/*影片*/
+
+/* =====================
+影片
+===================== */
 
 
 #video-container{
@@ -548,13 +644,17 @@ transition:.3s;
 background:white;
 
 
-padding:10px;
+padding:8px;
 
 
 border-radius:12px;
 
 
+flex-shrink:0;
+
+
 }
+
 
 
 
@@ -562,13 +662,18 @@ border-radius:12px;
 .video-title{
 
 
+font-size:14px;
+
+
 font-weight:bold;
 
 
-margin-bottom:8px;
+margin-bottom:5px;
 
 
 }
+
+
 
 
 
@@ -578,13 +683,16 @@ margin-bottom:8px;
 width:100%;
 
 
-height:130px;
+height:100px;
 
 
 background:black;
 
 
 border-radius:10px;
+
+
+display:block;
 
 
 }
@@ -601,13 +709,13 @@ border-radius:10px;
 display:block;
 
 
-margin:10px auto 0;
+margin:6px auto 0;
 
 
-width:200px;
+width:170px;
 
 
-height:40px;
+height:34px;
 
 
 border:none;
@@ -622,6 +730,9 @@ background:#ff4b4b;
 color:white;
 
 
+font-size:14px;
+
+
 cursor:pointer;
 
 
@@ -633,13 +744,21 @@ cursor:pointer;
 
 
 
+
+
+/* 返回首頁 */
+
+
 .btn-back{
 
 
 margin-top:auto;
 
 
-height:38px;
+flex-shrink:0;
+
+
+height:34px;
 
 
 border:none;
@@ -657,6 +776,9 @@ color:white;
 cursor:pointer;
 
 
+font-size:14px;
+
+
 }
 
 
@@ -668,7 +790,7 @@ cursor:pointer;
 
 
 /* =====================
-右側
+右側 Map / Street View
 ===================== */
 
 
@@ -770,6 +892,7 @@ z-index:999;
 
 
 
+
 .modal-box{
 
 
@@ -811,16 +934,19 @@ right:15px;
 top:10px;
 
 
-border:none;
-
-
 width:30px;
 
 
 height:30px;
 
 
+border:none;
+
+
 border-radius:50%;
+
+
+background:#eee;
 
 
 font-size:20px;
@@ -830,6 +956,8 @@ cursor:pointer;
 
 
 }
+
+
 
 
 
