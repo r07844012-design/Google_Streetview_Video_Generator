@@ -231,10 +231,9 @@ onclick="locateEnd()">
 
 
 <button
-
-class="btn-action"
-
-onclick="generateVideo()">
+    id="btn-generate"
+    class="btn-action"
+    onclick="generateVideo()">
 
 🎬 產生影片
 
@@ -250,44 +249,24 @@ onclick="generateVideo()">
 
 <!-- 狀態 -->
 
-
 <div class="status-card">
 
+    <span class="status-title">
+        生成狀態
+    </span>
 
-<div class="status-title">
+    <span id="status-text">
+        尚未開始
+    </span>
 
-生成狀態
-
-</div>
-
-
-
-<div id="status-text">
-
-等待輸入
-
-</div>
-
-
-
-<div class="estimate-time">
-
-
-預估影片時間：
-
-<span id="estimated-time">
-
-尚未計算
-
-</span>
-
+    <span
+        class="estimate-time"
+        id="estimate-time"
+    >
+        --
+    </span>
 
 </div>
-
-
-
-</div>
-
 
 
 
@@ -356,7 +335,23 @@ class="hidden">
 
 <div class="video-title">
 
-🎥 Street View影片
+<span>🎥 Street View影片</span>
+
+<a
+
+id="download-link"
+
+class="download-icon"
+
+download="streetview.webm"
+
+aria-label="下載影片"
+
+title="下載影片">
+
+⇩
+
+</a>
 
 </div>
 
@@ -372,28 +367,6 @@ controls
 playsinline>
 
 </video>
-
-
-
-
-
-<a
-
-id="download-link"
-
-download="streetview.webm">
-
-
-<button
-
-class="btn-download">
-
-⬇️ 下載影片
-
-</button>
-
-
-</a>
 
 
 

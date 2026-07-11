@@ -671,6 +671,15 @@ font-weight:bold;
 margin-bottom:5px;
 
 
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:space-between;
+
+
 }
 
 
@@ -683,7 +692,7 @@ margin-bottom:5px;
 width:100%;
 
 
-height:100px;
+height:170px;
 
 
 background:black;
@@ -703,25 +712,22 @@ display:block;
 
 
 
-.btn-download{
+.download-icon{
 
 
-display:block;
+display:grid;
 
 
-margin:6px auto 0;
+place-items:center;
 
 
-width:170px;
+width:28px;
 
 
-height:34px;
+height:28px;
 
 
-border:none;
-
-
-border-radius:20px;
+border-radius:50%;
 
 
 background:#ff4b4b;
@@ -730,10 +736,28 @@ background:#ff4b4b;
 color:white;
 
 
-font-size:14px;
+font-size:21px;
+
+
+font-weight:bold;
+
+
+line-height:1;
+
+
+text-decoration:none;
 
 
 cursor:pointer;
+
+
+}
+
+
+.download-icon:hover{
+
+
+background:#e23d3d;
 
 
 }
