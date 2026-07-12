@@ -85,6 +85,182 @@ box-shadow:
 }
 
 
+#page-account{
+
+position:absolute;
+
+inset:0;
+
+display:grid;
+
+place-items:center;
+
+padding:20px;
+
+}
+
+
+.account-card{
+
+width:min(440px, 100%);
+
+padding:28px;
+
+border-radius:20px;
+
+background:white;
+
+box-shadow:0 10px 35px rgba(0,0,0,.15);
+
+}
+
+
+.account-header{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+
+.account-header h2{
+
+margin:0;
+
+font-size:20px;
+
+}
+
+
+.account-intro{
+
+margin:16px 0;
+
+color:#5f6368;
+
+font-size:14px;
+
+}
+
+
+.account-options{
+
+display:grid;
+
+gap:9px;
+
+}
+
+
+.account-option{
+
+cursor:pointer;
+
+}
+
+
+.account-option input{
+
+position:absolute;
+
+opacity:0;
+
+}
+
+
+.account-option span{
+
+display:grid;
+
+gap:4px;
+
+padding:12px;
+
+border:1px solid #d5d9e2;
+
+border-radius:10px;
+
+}
+
+
+.account-option small,
+.config-help{
+
+color:#5f6368;
+
+line-height:1.45;
+
+}
+
+
+.account-option input:checked + span{
+
+border-color:#4285f4;
+
+background:#e8f0fe;
+
+color:#1967d2;
+
+}
+
+
+.custom-config{
+
+display:grid;
+
+gap:8px;
+
+margin-top:16px;
+
+font-size:13px;
+
+}
+
+
+.custom-config input{
+
+height:36px;
+
+padding:0 10px;
+
+border:1px solid #ccc;
+
+border-radius:8px;
+
+}
+
+
+.btn-save-config{
+
+height:38px;
+
+border:0;
+
+border-radius:19px;
+
+background:#4285f4;
+
+color:white;
+
+font-size:14px;
+
+cursor:pointer;
+
+}
+
+
+.account-card .btn-map{
+
+display:block;
+
+margin:20px auto 0;
+
+}
+
+
 
 
 .btn-map{
@@ -116,6 +292,36 @@ font-size:16px;
 
 cursor:pointer;
 
+
+}
+
+
+.btn-account{
+
+margin-top:20px;
+
+width:260px;
+
+height:44px;
+
+border:1px solid #4285f4;
+
+border-radius:22px;
+
+background:white;
+
+color:#1967d2;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+
+.btn-account:hover{
+
+background:#e8f0fe;
 
 }
 
@@ -227,6 +433,81 @@ margin:0;
 
 
 font-size:20px;
+
+
+}
+
+
+.sidebar-heading{
+
+
+display:flex;
+
+
+align-items:center;
+
+
+gap:7px;
+
+
+}
+
+
+.back-icon{
+
+
+display:grid;
+
+
+place-items:center;
+
+
+width:30px;
+
+
+height:30px;
+
+
+border:1px solid #d5d9e2;
+
+
+border-radius:50%;
+
+
+background:white;
+
+
+color:#3c4043;
+
+
+font-size:21px;
+
+
+line-height:1;
+
+
+cursor:pointer;
+
+
+}
+
+
+.back-icon:hover{
+
+
+background:#f1f3f4;
+
+
+}
+
+
+.back-icon:focus-visible{
+
+
+outline:2px solid #4285f4;
+
+
+outline-offset:2px;
 
 
 }
@@ -456,13 +737,13 @@ flex-shrink:0;
 
 }
 
+.settings-label,
 .generation-settings label{
 
 font-weight:bold;
 
 }
 
-.generation-settings select,
 .frame-distance-control input{
 
 height:30px;
@@ -476,6 +757,76 @@ padding:0 8px;
 font-size:13px;
 
 background:white;
+
+}
+
+.transport-options{
+
+display:flex;
+
+gap:5px;
+
+}
+
+.transport-option{
+
+flex:1;
+
+cursor:pointer;
+
+}
+
+.transport-option input{
+
+position:absolute;
+
+opacity:0;
+
+pointer-events:none;
+
+}
+
+.transport-option span{
+
+display:block;
+
+padding:7px 4px;
+
+border:1px solid #d5d9e2;
+
+border-radius:7px;
+
+background:white;
+
+color:#4d5565;
+
+font-size:12px;
+
+text-align:center;
+
+white-space:nowrap;
+
+transition:.2s;
+
+}
+
+.transport-option input:checked + span{
+
+border-color:#4285f4;
+
+background:#e8f0fe;
+
+color:#1967d2;
+
+font-weight:bold;
+
+}
+
+.transport-option input:focus-visible + span{
+
+outline:2px solid #4285f4;
+
+outline-offset:2px;
 
 }
 
@@ -776,55 +1127,49 @@ display:block;
 
 
 
-.download-icon{
+.download-button{
 
+display:inline-flex;
 
-display:grid;
+align-items:center;
 
+gap:5px;
 
-place-items:center;
+padding:6px 10px;
 
+border-radius:7px;
 
-width:28px;
+background:#e8f0fe;
 
+color:#1967d2;
 
-height:28px;
-
-
-border-radius:50%;
-
-
-background:#ff4b4b;
-
-
-color:white;
-
-
-font-size:21px;
-
+font-size:12px;
 
 font-weight:bold;
 
-
-line-height:1;
-
-
 text-decoration:none;
 
-
 cursor:pointer;
 
+transition:.2s;
+
+}
+
+.download-button > span:first-child{
+
+font-size:18px;
+
+line-height:.8;
+
+}
+
+.download-button:hover{
+
+background:#d2e3fc;
 
 }
 
 
-.download-icon:hover{
-
-
-background:#e23d3d;
-
-
-}
 
 
 
@@ -832,42 +1177,6 @@ background:#e23d3d;
 
 
 
-
-
-/* 返回首頁 */
-
-
-.btn-back{
-
-
-margin-top:auto;
-
-
-flex-shrink:0;
-
-
-height:34px;
-
-
-border:none;
-
-
-border-radius:20px;
-
-
-background:#666;
-
-
-color:white;
-
-
-cursor:pointer;
-
-
-font-size:14px;
-
-
-}
 
 
 

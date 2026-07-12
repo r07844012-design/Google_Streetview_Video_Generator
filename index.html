@@ -42,24 +42,11 @@
 
 
 
-<div 
-id="g_id_onload"
+<button class="btn-account" onclick="switchPage('account')">
 
-data-client_id=""
+⚙️ 帳戶設定
 
-data-callback="handleCredentialResponse">
-
-</div>
-
-
-
-
-<div 
-class="g_id_signin"
-
-data-type="standard">
-
-</div>
+</button>
 
 
 
@@ -83,6 +70,52 @@ onclick="switchPage('map')">
 
 
 
+
+
+<!-- 帳戶設定 -->
+
+<div id="page-account" class="hidden">
+
+<div class="account-card">
+
+<div class="account-header">
+<button class="back-icon" onclick="switchPage('menu')" aria-label="回上一頁" title="回上一頁">←</button>
+<h2>帳戶設定</h2>
+</div>
+
+<p class="account-intro">選擇要用哪一組 Google 設定來使用地圖功能。</p>
+
+<div class="account-options" role="radiogroup" aria-label="帳戶設定">
+<label class="account-option">
+<input type="radio" name="config-profile" value="creator" checked onchange="selectConfigProfile('creator')">
+<span><strong>使用創作者帳戶</strong><small>直接使用本網站提供的地圖功能</small></span>
+</label>
+
+<label class="account-option">
+<input type="radio" name="config-profile" value="custom" onchange="selectConfigProfile('custom')">
+<span><strong>使用自己的 Google 帳戶</strong><small>使用自己的 Client ID 與 Maps API Key</small></span>
+</label>
+</div>
+
+<div id="custom-config-fields" class="custom-config hidden">
+<label for="custom-client-id">Google Client ID</label>
+<input id="custom-client-id" type="text" autocomplete="off" placeholder="xxxx.apps.googleusercontent.com">
+
+<label for="custom-maps-api-key">Google Maps API Key</label>
+<input id="custom-maps-api-key" type="text" autocomplete="off" placeholder="AIza...">
+
+<button class="btn-save-config" onclick="saveCustomConfig()">儲存並使用此設定</button>
+
+<small class="config-help">Google 登入僅用於辨識帳戶，不會提供或自動讀取你的 Client ID、Maps API Key。</small>
+
+<div id="google-signin-button"></div>
+</div>
+
+<button class="btn-map" onclick="switchPage('map')">進入地圖功能</button>
+
+</div>
+
+</div>
 
 
 <!-- =====================
@@ -111,9 +144,23 @@ class="hidden">
 <div class="sidebar-title">
 
 
+<div class="sidebar-heading">
+
+<button
+class="back-icon"
+onclick="switchPage('menu')"
+aria-label="回上一頁"
+title="回上一頁">
+
+←
+
+</button>
+
 <h2>
 路徑設定
 </h2>
+
+</div>
 
 
 <button
@@ -242,13 +289,26 @@ onclick="locateEnd()">
 
 <div class="generation-settings">
 
-<label for="transport-mode">交通工具</label>
+<span class="settings-label">交通工具</span>
 
-<select id="transport-mode">
-<option value="car">汽車</option>
-<option value="motorcycle">機車</option>
-<option value="walking">步行</option>
-</select>
+<div class="transport-options" role="radiogroup" aria-label="交通工具">
+
+<label class="transport-option">
+<input type="radio" name="transport-mode" value="car" checked>
+<span>🚗 汽車</span>
+</label>
+
+<label class="transport-option">
+<input type="radio" name="transport-mode" value="motorcycle">
+<span>🛵 機車</span>
+</label>
+
+<label class="transport-option">
+<input type="radio" name="transport-mode" value="walking">
+<span>🚶 步行</span>
+</label>
+
+</div>
 
 <label for="frame-distance">每幾公尺一張</label>
 
@@ -361,7 +421,7 @@ class="hidden">
 
 id="download-link"
 
-class="download-icon"
+class="download-button"
 
 download="streetview.webm"
 
@@ -369,7 +429,9 @@ aria-label="下載影片"
 
 title="下載影片">
 
-⇩
+<span aria-hidden="true">↓</span>
+
+<span>下載影片</span>
 
 </a>
 
@@ -396,19 +458,6 @@ playsinline>
 
 
 
-
-
-
-
-<button
-
-class="btn-back"
-
-onclick="switchPage('menu')">
-
-返回首頁
-
-</button>
 
 
 
@@ -546,15 +595,43 @@ onclick="closeApiModal()">
 
 window.onload=function(){
 
+initializeAccountSettings();
+
+return;
 
 
-document
 
-.getElementById("g_id_onload")
+google.accounts.id.initialize({
 
-.dataset.client_id =
+client_id:CONFIG.GOOGLE_CLIENT_ID,
 
-CONFIG.GOOGLE_CLIENT_ID;
+callback:handleCredentialResponse
+
+});
+
+
+
+google.accounts.id.renderButton(
+
+document.getElementById("google-signin-button"),
+
+{
+
+type:"standard",
+
+theme:"outline",
+
+size:"large",
+
+text:"signin_with",
+
+locale:"zh-TW",
+
+width:260
+
+}
+
+);
 
 
 

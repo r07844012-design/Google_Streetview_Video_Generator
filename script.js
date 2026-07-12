@@ -6,6 +6,91 @@ let geocoder;
 let startMarker = null;
 let endMarker = null;
 let activeVideoJob = null;
+let activeConfig = { ...CONFIG };
+let mapsLoading = false;
+
+const CUSTOM_CONFIG_STORAGE_KEY = "streetview-custom-google-config";
+const CONFIG_PROFILE_STORAGE_KEY = "streetview-config-profile";
+
+function initializeAccountSettings(){
+    const savedConfig = localStorage.getItem(CUSTOM_CONFIG_STORAGE_KEY);
+    if(savedConfig){
+        try{
+            const { clientId, mapsApiKey } = JSON.parse(savedConfig);
+            document.getElementById("custom-client-id").value = clientId || "";
+            document.getElementById("custom-maps-api-key").value = mapsApiKey || "";
+        }catch(error){
+            localStorage.removeItem(CUSTOM_CONFIG_STORAGE_KEY);
+        }
+    }
+
+    const savedProfile = localStorage.getItem(CONFIG_PROFILE_STORAGE_KEY) || "creator";
+    document.querySelector(`input[name="config-profile"][value="${savedProfile}"]`).checked = true;
+    selectConfigProfile(savedProfile);
+    if(savedProfile === "custom" && activeConfig.GOOGLE_CLIENT_ID !== CONFIG.GOOGLE_CLIENT_ID){
+        renderGoogleSignIn(activeConfig.GOOGLE_CLIENT_ID);
+    }
+}
+
+function selectConfigProfile(profile){
+    const customFields = document.getElementById("custom-config-fields");
+    customFields.classList.toggle("hidden", profile !== "custom");
+    localStorage.setItem(CONFIG_PROFILE_STORAGE_KEY, profile);
+
+    if(profile === "creator"){
+        activeConfig = { ...CONFIG };
+        return;
+    }
+
+    try{
+        const savedConfig = JSON.parse(localStorage.getItem(CUSTOM_CONFIG_STORAGE_KEY));
+        if(savedConfig?.clientId && savedConfig?.mapsApiKey){
+            activeConfig = {
+                GOOGLE_CLIENT_ID:savedConfig.clientId,
+                GOOGLE_MAPS_API_KEY:savedConfig.mapsApiKey
+            };
+        }
+    }catch(error){
+        localStorage.removeItem(CUSTOM_CONFIG_STORAGE_KEY);
+    }
+}
+
+function saveCustomConfig(){
+    const clientId = document.getElementById("custom-client-id").value.trim();
+    const mapsApiKey = document.getElementById("custom-maps-api-key").value.trim();
+    if(!clientId || !mapsApiKey){
+        alert("請填寫 Google Client ID 與 Google Maps API Key");
+        return;
+    }
+
+    activeConfig = { GOOGLE_CLIENT_ID:clientId, GOOGLE_MAPS_API_KEY:mapsApiKey };
+    localStorage.setItem(CUSTOM_CONFIG_STORAGE_KEY, JSON.stringify({ clientId, mapsApiKey }));
+    localStorage.setItem(CONFIG_PROFILE_STORAGE_KEY, "custom");
+    renderGoogleSignIn(clientId);
+    alert("設定已儲存在這台裝置的瀏覽器中。");
+}
+
+function renderGoogleSignIn(clientId){
+    const container = document.getElementById("google-signin-button");
+    container.replaceChildren();
+    google.accounts.id.initialize({ client_id:clientId, callback:handleCredentialResponse });
+    google.accounts.id.renderButton(container, {
+        type:"standard", theme:"outline", size:"large", text:"signin_with", locale:"zh-TW", width:260
+    });
+}
+
+function loadGoogleMaps(){
+    if(map || mapsLoading) return;
+    mapsLoading = true;
+    const script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(activeConfig.GOOGLE_MAPS_API_KEY) + "&libraries=geometry&callback=initMap&loading=async";
+    script.async = true;
+    script.onerror = () => {
+        mapsLoading = false;
+        alert("Google Maps 載入失敗，請確認目前帳戶設定的 Maps API Key。");
+    };
+    document.head.appendChild(script);
+}
 
 function handleCredentialResponse(response){
     console.log("Google Login Token:", response.credential);
@@ -15,12 +100,25 @@ function handleCredentialResponse(response){
 function switchPage(page){
     if(page === "map"){
         document.getElementById("page-menu").classList.add("hidden");
+        document.getElementById("page-account").classList.add("hidden");
         document.getElementById("page-map-dashboard").classList.remove("hidden");
-        setTimeout(() => google.maps.event.trigger(map, "resize"), 300);
+        if(map){
+            setTimeout(() => google.maps.event.trigger(map, "resize"), 300);
+        }else{
+            loadGoogleMaps();
+        }
+        return;
+    }
+
+    if(page === "account"){
+        document.getElementById("page-menu").classList.add("hidden");
+        document.getElementById("page-map-dashboard").classList.add("hidden");
+        document.getElementById("page-account").classList.remove("hidden");
         return;
     }
 
     document.getElementById("page-map-dashboard").classList.add("hidden");
+    document.getElementById("page-account").classList.add("hidden");
     document.getElementById("page-menu").classList.remove("hidden");
 }
 
@@ -142,7 +240,7 @@ async function generateVideo(){
 
     const start = document.getElementById("start-input").value;
     const end = document.getElementById("end-input").value;
-    const transport = document.getElementById("transport-mode").value;
+    const transport = document.querySelector('input[name="transport-mode"]:checked').value;
     const frameDistance = Number(document.getElementById("frame-distance").value);
     if(!start || !end){
         alert("請輸入起點與目的地");
@@ -213,7 +311,7 @@ async function generateVideo(){
                 images.push(
                     "https://maps.googleapis.com/maps/api/streetview?size=640x360" +
                     `&location=${current.lat()},${current.lng()}` +
-                    `&heading=${heading}&pitch=10&key=${CONFIG.GOOGLE_MAPS_API_KEY}`
+                    `&heading=${heading}&pitch=10&key=${activeConfig.GOOGLE_MAPS_API_KEY}`
                 );
                 updateProgress(Math.floor((i / frames.length) * 60), `下載街景 ${i + 1}/${frames.length}`);
             }
