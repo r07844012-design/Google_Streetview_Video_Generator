@@ -432,6 +432,70 @@ cursor:pointer;
 }
 
 
+/* 影片設定 */
+
+.generation-settings{
+
+display:grid;
+
+grid-template-columns:auto 1fr;
+
+align-items:center;
+
+gap:7px 10px;
+
+padding:9px 10px;
+
+background:#f7f8fb;
+
+border-radius:10px;
+
+font-size:13px;
+
+flex-shrink:0;
+
+}
+
+.generation-settings label{
+
+font-weight:bold;
+
+}
+
+.generation-settings select,
+.frame-distance-control input{
+
+height:30px;
+
+border:1px solid #ccc;
+
+border-radius:7px;
+
+padding:0 8px;
+
+font-size:13px;
+
+background:white;
+
+}
+
+.frame-distance-control{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+}
+
+.frame-distance-control input{
+
+width:76px;
+
+}
+
+
 
 
 

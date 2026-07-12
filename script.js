@@ -142,10 +142,27 @@ async function generateVideo(){
 
     const start = document.getElementById("start-input").value;
     const end = document.getElementById("end-input").value;
+    const transport = document.getElementById("transport-mode").value;
+    const frameDistance = Number(document.getElementById("frame-distance").value);
     if(!start || !end){
         alert("請輸入起點與目的地");
         return;
     }
+    if(!Number.isFinite(frameDistance) || frameDistance < 10){
+        alert("請輸入至少 10 公尺的取樣距離");
+        return;
+    }
+
+    const travelModes = {
+        car:google.maps.TravelMode.DRIVING,
+        motorcycle:google.maps.TravelMode.DRIVING,
+        walking:google.maps.TravelMode.WALKING
+    };
+    const transportLabels = {
+        car:"汽車",
+        motorcycle:"機車（依駕車路線規劃）",
+        walking:"步行"
+    };
 
     const job = { cancelled:false, countdownId:null, recorder:null };
     activeVideoJob = job;
@@ -155,7 +172,7 @@ async function generateVideo(){
     directionsService.route({
         origin:start,
         destination:end,
-        travelMode:google.maps.TravelMode.DRIVING
+        travelMode:travelModes[transport]
     }, async (result, statusCode) => {
         if(job.cancelled || activeVideoJob !== job) return;
         if(statusCode !== "OK"){
@@ -168,16 +185,15 @@ async function generateVideo(){
             directionsRenderer.setDirections(result);
             const path = [];
             result.routes[0].legs[0].steps.forEach(step => step.path.forEach(point => path.push(point)));
-            const frameCount = 40;
-            const step = Math.max(1, Math.floor(path.length / frameCount));
-            const frames = [];
-            for(let i = 0; i < path.length; i += step) frames.push(path[i]);
+            const frames = samplePathByDistance(path, frameDistance);
 
             const videoLength = Math.round(frames.length * 1.5);
             const processingEstimate = frames.length * (0.8 + 1.5);
             document.getElementById("api-estimate").innerHTML = `
                 本次預估：<br>
                 Street View 圖片：<b>${frames.length}</b> 張<br>
+                交通工具：<b>${transportLabels[transport]}</b><br>
+                取樣距離：<b>每 ${frameDistance} 公尺一張</b><br>
                 每張：<b>1.5秒</b><br>
                 影片長度：<b>${videoLength} 秒</b><br><br>
                 額度請至 <a href="https://console.cloud.google.com/apis/dashboard?authuser=1&organizationId=1007703161268&project=project-e6beb6c1-7d26-433c-89f" target="_blank" rel="noopener noreferrer">Google Cloud Console</a> 查看
@@ -217,6 +233,37 @@ async function generateVideo(){
             }
         }
     });
+}
+
+function samplePathByDistance(path, intervalMeters){
+    if(path.length < 2) return path;
+
+    const frames = [path[0]];
+    let distanceSinceLastFrame = 0;
+
+    for(let i = 1; i < path.length; i++){
+        let segmentStart = path[i - 1];
+        const segmentEnd = path[i];
+        let segmentDistance = google.maps.geometry.spherical.computeDistanceBetween(segmentStart, segmentEnd);
+
+        while(distanceSinceLastFrame + segmentDistance >= intervalMeters){
+            const distanceToNextFrame = intervalMeters - distanceSinceLastFrame;
+            const heading = google.maps.geometry.spherical.computeHeading(segmentStart, segmentEnd);
+            const frame = google.maps.geometry.spherical.computeOffset(segmentStart, distanceToNextFrame, heading);
+            frames.push(frame);
+            segmentStart = frame;
+            segmentDistance -= distanceToNextFrame;
+            distanceSinceLastFrame = 0;
+        }
+
+        distanceSinceLastFrame += segmentDistance;
+    }
+
+    const lastPoint = path[path.length - 1];
+    if(google.maps.geometry.spherical.computeDistanceBetween(frames[frames.length - 1], lastPoint) > 1){
+        frames.push(lastPoint);
+    }
+    return frames;
 }
 
 async function playStreetAnimation(frames, job){
