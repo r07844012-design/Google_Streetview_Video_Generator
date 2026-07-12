@@ -290,6 +290,7 @@ async function generateVideo(){
             document.getElementById("api-estimate").innerHTML = `
                 本次預估：<br>
                 Street View 圖片：<b>${frames.length}</b> 張<br>
+                路線小地圖：<b>1</b> 張 Maps Static API<br>
                 交通工具：<b>${transportLabels[transport]}</b><br>
                 取樣距離：<b>每 ${frameDistance} 公尺一張</b><br>
                 每張：<b>1.5秒</b><br>
@@ -297,6 +298,10 @@ async function generateVideo(){
                 額度請至 <a href="https://console.cloud.google.com/apis/dashboard?authuser=1&organizationId=1007703161268&project=project-e6beb6c1-7d26-433c-89f" target="_blank" rel="noopener noreferrer">Google Cloud Console</a> 查看
             `;
             startCountdown(job, processingEstimate);
+
+            document.getElementById("status-text").innerText = "準備路線小地圖...";
+            const miniMap = await createRouteMiniMap(frames);
+            ensureActiveJob(job);
 
             await playStreetAnimation(frames, job);
             ensureActiveJob(job);
@@ -316,7 +321,7 @@ async function generateVideo(){
                 updateProgress(Math.floor((i / frames.length) * 60), `下載街景 ${i + 1}/${frames.length}`);
             }
 
-            const video = await createWebM(images, 1500, job);
+            const video = await createWebM(images, frames, 1500, job, miniMap);
             ensureActiveJob(job);
             document.getElementById("preview-video").src = video;
             document.getElementById("download-link").href = video;
@@ -364,6 +369,110 @@ function samplePathByDistance(path, intervalMeters){
     return frames;
 }
 
+async function createRouteMiniMap(frames){
+    const width = 220;
+    const height = 130;
+    const outline = simplifyPath(frames, 90);
+    const viewport = getMiniMapViewport(outline, width, height);
+    const encodedPath = google.maps.geometry.encoding.encodePath(outline);
+    const params = new URLSearchParams({
+        center:`${viewport.center.lat},${viewport.center.lng}`,
+        zoom:String(viewport.zoom),
+        size:`${width}x${height}`,
+        maptype:"roadmap",
+        path:`color:0x4285F4ff|weight:4|enc:${encodedPath}`,
+        key:activeConfig.GOOGLE_MAPS_API_KEY
+    });
+
+    try{
+        return {
+            image:await loadCanvasImage(`https://maps.googleapis.com/maps/api/staticmap?${params}`),
+            width,
+            height,
+            viewport
+        };
+    }catch(error){
+        console.warn("路線小地圖載入失敗", error);
+        return null;
+    }
+}
+
+function simplifyPath(path, maxPoints){
+    if(path.length <= maxPoints) return path;
+    const step = Math.ceil(path.length / maxPoints);
+    const simplified = path.filter((point, index) => index % step === 0);
+    const lastPoint = path[path.length - 1];
+    if(simplified[simplified.length - 1] !== lastPoint) simplified.push(lastPoint);
+    return simplified;
+}
+
+function getMiniMapViewport(path, width, height){
+    const worldPoints = path.map(point => latLngToWorld(point, 0));
+    const minX = Math.min(...worldPoints.map(point => point.x));
+    const maxX = Math.max(...worldPoints.map(point => point.x));
+    const minY = Math.min(...worldPoints.map(point => point.y));
+    const maxY = Math.max(...worldPoints.map(point => point.y));
+    const spanX = Math.max(maxX - minX, 0.0001);
+    const spanY = Math.max(maxY - minY, 0.0001);
+    const zoom = Math.max(1, Math.min(18, Math.floor(Math.log2(Math.min((width - 32) / spanX, (height - 32) / spanY)))));
+    const centerWorld = { x:(minX + maxX) / 2, y:(minY + maxY) / 2 };
+
+    return { zoom, center:worldToLatLng(centerWorld, 0) };
+}
+
+function latLngToWorld(point, zoom){
+    const scale = 256 * 2 ** zoom;
+    const latitude = typeof point.lat === "function" ? point.lat() : point.lat;
+    const longitude = typeof point.lng === "function" ? point.lng() : point.lng;
+    const lat = Math.max(-85.05112878, Math.min(85.05112878, latitude));
+    const sin = Math.sin(lat * Math.PI / 180);
+    return {
+        x:(longitude + 180) / 360 * scale,
+        y:(0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * scale
+    };
+}
+
+function worldToLatLng(point, zoom){
+    const scale = 256 * 2 ** zoom;
+    const lng = point.x / scale * 360 - 180;
+    const lat = 180 / Math.PI * Math.atan(Math.sinh(Math.PI * (1 - 2 * point.y / scale)));
+    return { lat, lng };
+}
+
+function loadCanvasImage(src){
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error("圖片載入失敗"));
+        image.src = src;
+    });
+}
+
+function drawRouteMiniMap(ctx, miniMap, position){
+    if(!miniMap) return;
+
+    const x = 12;
+    const y = 360 - miniMap.height - 12;
+    const centerWorld = latLngToWorld(miniMap.viewport.center, miniMap.viewport.zoom);
+    const pointWorld = latLngToWorld(position, miniMap.viewport.zoom);
+    const markerX = x + miniMap.width / 2 + pointWorld.x - centerWorld.x;
+    const markerY = y + miniMap.height / 2 + pointWorld.y - centerWorld.y;
+
+    ctx.save();
+    ctx.fillStyle = "rgba(0, 0, 0, .28)";
+    ctx.fillRect(x - 3, y - 3, miniMap.width + 6, miniMap.height + 6);
+    ctx.drawImage(miniMap.image, x, y, miniMap.width, miniMap.height);
+    ctx.beginPath();
+    ctx.arc(markerX, markerY, 6, 0, Math.PI * 2);
+    ctx.fillStyle = "#ea4335";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+    ctx.restore();
+}
+
 async function playStreetAnimation(frames, job){
     for(const point of frames){
         ensureActiveJob(job);
@@ -384,7 +493,7 @@ function wait(ms, job){
     });
 }
 
-async function createWebM(images, delay, job){
+async function createWebM(images, frames, delay, job, miniMap){
     const canvas = document.createElement("canvas");
     canvas.width = 640;
     canvas.height = 360;
@@ -404,11 +513,16 @@ async function createWebM(images, delay, job){
             const image = new Image();
             image.crossOrigin = "anonymous";
             image.onload = () => {
-                if(job.cancelled) return reject(new DOMException("影片產生已取消", "AbortError"));
-                ctx.clearRect(0, 0, 640, 360);
-                ctx.drawImage(image, 0, 0, 640, 360);
-                updateProgress(60 + Math.floor(((i + 1) / images.length) * 40), `製作影片 ${i + 1}/${images.length}`);
-                setTimeout(() => job.cancelled ? reject(new DOMException("影片產生已取消", "AbortError")) : resolve(), delay);
+                try{
+                    if(job.cancelled) return reject(new DOMException("影片產生已取消", "AbortError"));
+                    ctx.clearRect(0, 0, 640, 360);
+                    ctx.drawImage(image, 0, 0, 640, 360);
+                    drawRouteMiniMap(ctx, miniMap, frames[i]);
+                    updateProgress(60 + Math.floor(((i + 1) / images.length) * 40), `製作影片 ${i + 1}/${images.length}`);
+                    setTimeout(() => job.cancelled ? reject(new DOMException("影片產生已取消", "AbortError")) : resolve(), delay);
+                }catch(error){
+                    reject(error);
+                }
             };
             image.onerror = () => resolve();
             image.src = images[i];
